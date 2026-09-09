@@ -60,6 +60,9 @@ $$;
 create policy "Members can read their households"
   on households for select using (is_member(id));
 
+create policy "Authenticated users can create households"
+  on households for insert with check (auth.uid() is not null);
+
 create policy "Owners can update their households"
   on households for update using (
     exists (
@@ -81,6 +84,10 @@ create policy "Owners can manage members"
         and hm.role = 'owner'
     )
   );
+
+-- Allow users to add themselves to households
+create policy "Users can add themselves to households"
+  on household_members for insert with check (profile_id = auth.uid());
 
 -- Allow users to leave a household (delete their own row)
 create policy "Users can leave households"
