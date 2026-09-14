@@ -73,3 +73,32 @@ screenshot: CASA-fix-leaderboard-390-dark.png
 dark failing: 0
 screenshot: CASA-fix-leaderboard-390-light.png
 screenshot: CASA-fix-leaderboard-390-dark.png
+
+== CASA-020 contrast, DARK theme (.dark scope) ==
+    5.7  need 3  PASS  [94,58,0]        on [246,185,0]      rank pill: crown-foreground ON bg-crown
+   5.44  need 4.5  PASS  [181,137,19]     on [19,25,45]       trophy count: crown-ink on dark card
+   5.98  need 4.5  PASS  [228,124,32]     on [19,25,45]       streak: accent-ink on dark card
+   5.45  need 4.5  PASS  [10,165,95]      on [19,25,45]       success-ink on dark card
+   5.04  need 4.5  PASS  [21,173,110]     on [33,40,61]       1 pt badge: effort-rapida-ink on secondary
+   5.09  need 4.5  PASS  [105,149,252]    on [33,40,61]       3 pts badge: effort-normal-ink on secondary
+   5.04  need 4.5  PASS  [254,102,82]     on [33,40,61]       5 pts badge: effort-pesada-ink on secondary
+   4.98  need 4.5  PASS  [228,124,32]     on [42,41,40]       winner row: accent-ink on bg-crown/10
+   5.39  need 4.5  PASS  [136,143,162]    on [19,25,45]       muted-foreground on dark card
+dark failing: 0
+screenshot: CASA-fix-leaderboard-390-light.png
+screenshot: CASA-fix-leaderboard-390-dark.png
+
+== CASA-020 before/after, both measured in Chromium at 390x844 (sRGB canvas readback) ==
+  the "before" column re-paints the ORIGINAL oklch token value on the same composited background
+  before  after  need  bg rgb            pair
+    1.77    5.7     3  [246,185,0]       rank pill numeral on bg-crown
+    1.72   5.42   4.5  [250,252,255]     crown (trophy counts) on card
+    2.55   5.49   4.5  [250,252,255]     accent (streak) on card
+    2.87   5.43   4.5  [250,252,255]     success on card
+    1.88   5.01   4.5  [224,231,253]     1 pt badge effort-rapida on secondary
+    3.29   5.04   4.5  [224,231,253]     3 pts badge effort-normal on secondary
+    2.87   5.04   4.5  [224,231,253]     5 pts badge effort-pesada on secondary
+     2.4   5.17   4.5  [250,245,229]     accent on bg-crown/10 (winner row)
+    1.94   5.18   4.5  [229,235,249]     effort-rapida on bg-primary/10
+    2.11   4.55   4.5  [249,227,210]     accent on bg-accent/20
+    2.72   5.15   4.5  [237,248,247]     success on bg-success/5

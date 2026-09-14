@@ -51,14 +51,14 @@ Side exits: `REOPENED` · `NEEDS-INFO` · `WONTFIX` · `CANNOT-REPRODUCE` · `DU
 | CASA-013 | `npm run lint` fails — `require()` import in `src/lib/supabase/server.ts` | S3 | P1 | PERF | backend-dev | OPEN |
 | CASA-014 | `/callback` spins forever when the magic link is expired or invalid | S3 | P1 | AUTH | frontend-dev | FIXED |
 | CASA-015 | Realtime task updates drop the assignee, so the name vanishes from the card | S3 | P2 | BOARD | frontend-dev | FIXED |
-| CASA-016 | 14 user-visible strings (15 sites) are hardcoded instead of living in `src/lib/i18n/es.ts` | S3 | P2 | I18N | frontend-dev | ASSIGNED |
-| CASA-017 | Tuteo instead of voseo: "Elige la cena del viernes" | S3 | P2 | I18N | frontend-dev | ASSIGNED |
-| CASA-018 | `maximum-scale=1` blocks pinch-zoom on every page | S3 | P2 | A11Y | frontend-dev | ASSIGNED |
-| CASA-019 | Icon-only buttons are 32–40 px — below the 44 px touch target on the primary device | S3 | P2 | A11Y | frontend-dev | ASSIGNED |
-| CASA-020 | Gamification colours fail WCAG AA contrast (winner's rank pill measures 1.77:1) | S3 | P2 | A11Y | frontend-dev | ASSIGNED |
+| CASA-016 | 14 user-visible strings (15 sites) are hardcoded instead of living in `src/lib/i18n/es.ts` | S3 | P2 | I18N | frontend-dev | FIXED |
+| CASA-017 | Tuteo instead of voseo: "Elige la cena del viernes" | S3 | P2 | I18N | frontend-dev | FIXED |
+| CASA-018 | `maximum-scale=1` blocks pinch-zoom on every page | S3 | P2 | A11Y | frontend-dev | FIXED |
+| CASA-019 | Icon-only buttons are 32–40 px — below the 44 px touch target on the primary device | S3 | P2 | A11Y | frontend-dev | FIXED |
+| CASA-020 | Gamification colours fail WCAG AA contrast (winner's rank pill measures 1.77:1) | S3 | P2 | A11Y | frontend-dev | FIXED |
 | CASA-021 | History shows an 8-day week: the exclusive end boundary is printed as the last day | S3 | P2 | HIST | frontend-dev | FIXED |
-| CASA-022 | A weekly recurring task saved with no weekday is accepted and never generates anything | S3 | P2 | TASK | frontend-dev | ASSIGNED |
-| CASA-023 | A member can add a phone number but can never remove it | S3 | P2 | SET | frontend-dev | ASSIGNED |
+| CASA-022 | A weekly recurring task saved with no weekday is accepted and never generates anything | S3 | P2 | TASK | frontend-dev | FIXED |
+| CASA-023 | A member can add a phone number but can never remove it | S3 | P2 | SET | frontend-dev | FIXED |
 | CASA-024 | `/manifest.json` is declared in metadata but does not exist | S3 | P3 | PERF | frontend-dev | ASSIGNED |
 
 ## Fix order
@@ -443,7 +443,7 @@ Took the "better alternative": the card now calls `formatWeekRange` instead of r
 | **Priority** | P2 |
 | **Area** | A11Y |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-A11Y-003 |
 
@@ -532,8 +532,69 @@ leaderboard and history cards at 390×844 once CASA-001 unblocks them.
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the `-ink` approach from the entry, with two changes.
+
+First, the rank pill. The suggestion was `bg-crown text-[--crown-ink]`, reusing the text ink. That ink is
+tuned for a near-white card, and on the gold fill it only reaches ~3:1 — enough for the entry's pill
+criterion but not for the "≥ 4.5:1 for every pair used for text" criterion directly above it, and the
+numeral *is* text. So the pill got its own token, `--crown-foreground`, a deep amber that reads as an
+engraved medal: **5.70:1** on the gold. The gold fill itself is unchanged, which is the point — the
+winner's pill is still the brightest thing on the screen, it just has a legible number in it.
+
+Second, I tuned against backgrounds measured in the browser rather than against `bg-card` alone. Several
+of these colours are used over translucent surfaces (`bg-crown/10`, `bg-primary/10`, `bg-accent/20`,
+`bg-success/5`) or over `secondary` (the effort badges are `Badge variant="secondary"`, not on the card),
+and `secondary` is the darkest of those — tuning to card would have left the 1 pt badge at 4.2:1. Every
+ink is now solved against its real composited background with headroom, so a re-measure with slightly
+different rounding will not flip a row.
+
+Method check: the script re-measures the **old** pairs alongside the new ones and reproduces this entry's
+numbers exactly — white-on-crown 1.77, `text-crown` 1.72, `text-accent` 2.55, `text-success` 2.87,
+`text-primary` 6.10, `text-destructive` 4.64. Same sRGB canvas readback, so the before/after numbers below
+are directly comparable to the ones in this report.
+
+Fills, gradients and borders are untouched: `--crown`, `--success`, `--accent`, `--effort-*` all keep their
+original values, and `bg-crown`, `bg-crown/10`, `border-crown/30`, the header gradients and the effort chip
+fills render exactly as before. Only foregrounds moved.
+
+The `.dark` block is mirrored (inks get *lighter* there) and measured under a `.dark` scope. Note the app
+ships no theme switcher today, so the dark values are correctness for later, not a live surface.
+
+Screenshots are of the leaderboard and task-card markup rendered verbatim against the app's own compiled
+stylesheet — the real components are behind auth (CASA-001), so this is markup parity, not a live route.
+
+**Fix applied**
+`src/app/globals.css` (new `--crown-ink`, `--crown-foreground`, `--success-ink`, `--accent-ink`,
+`--effort-{rapida,normal,pesada}-ink` + `@theme inline` registrations, mirrored in `.dark`),
+`src/components/leaderboard.tsx`, `src/components/board-view.tsx`,
+`src/app/(app)/casa/[id]/historial/page.tsx`, `src/app/(app)/casa/[id]/ajustes/page.tsx`,
+`src/app/(app)/onboarding/page.tsx` — text and icons moved onto the `-ink` tokens; fills keep the bright hues.
+
+**Before → after (light).** Both columns are measured in Chromium at 390×844 by the same sRGB canvas
+readback; the *before* column re-paints the original `oklch()` token value on the same composited
+background, so nothing here is estimated:
+| pair | before | after | need |
+|---|---|---|---|
+| rank pill numeral on `bg-crown` | 1.77 | **5.70** | 3.0 |
+| `text-crown` → `crown-ink` (trophy counts) on card | 1.72 | **5.42** | 4.5 |
+| `text-accent` → `accent-ink` (streak) on card | 2.55 | **5.49** | 4.5 |
+| `text-success` → `success-ink` on card | 2.87 | **5.43** | 4.5 |
+| 1 pt badge `effort-rapida` → `-ink` on `secondary` | 1.88 | **5.01** | 4.5 |
+| 3 pts badge `effort-normal` → `-ink` on `secondary` | 3.29 | **5.04** | 4.5 |
+| 5 pts badge `effort-pesada` → `-ink` on `secondary` | 2.87 | **5.04** | 4.5 |
+| `accent-ink` on `bg-crown/10` (winner row) | 2.40 | **5.17** | 4.5 |
+| `effort-rapida-ink` on `bg-primary/10` | 1.94 | **5.18** | 4.5 |
+| `accent-ink` on `bg-accent/20` | 2.11 | **4.55** | 4.5 |
+| `success-ink` on `bg-success/5` | 2.72 | **5.15** | 4.5 |
+| (regression) `text-primary` on card | 6.10 | **6.10** | 4.5 |
+| (regression) `text-destructive` on card | 4.64 | **4.64** | 4.5 |
+
+**Dark theme**, measured under a `.dark` scope: pill 5.70, `crown-ink` 5.44, `accent-ink` 5.98,
+`success-ink` 5.45, effort inks 5.04 / 5.09 / 5.04, `accent-ink` on `bg-crown/10` 4.98,
+`muted-foreground` 5.39 — **0 failing pairs in either theme**.
+Evidence: `qa/reports/2026-09-14/CASA-fix-a11y-measurements.txt`, screenshots `qa/reports/2026-09-14/CASA-fix-leaderboard-390-light.png` and
+`CASA-fix-leaderboard-390-dark.png`.
 
 ---
 
@@ -545,7 +606,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | A11Y |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-A11Y-002 |
 
@@ -622,8 +683,38 @@ re-check long titles and the effort badge at 390 px.
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Agreed with the call not to widen the shared shadcn scale — `ui/button.tsx` `size="icon"` is still
+`size-8`, and generated components keep the scale they expect. Everything was overridden at Casa's own
+call sites.
+
+I went past the four sites listed in the entry, because the acceptance criterion is "every `<button>` /
+`<a>` on `/casa/[id]`, `/nueva` and `/ajustes`", and the entry's own probe could only sample injected
+class strings (the signed-in routes are blocked by CASA-001). Reading the pages, the Lun–Dom day grids,
+the assignee/recurrence/assignment pills, the dreaded-task list and the app-shell header buttons all
+compile to 32–36 px and are just as tappable-by-mistake as the back arrows. They are now `min-h-11`.
+Widths: the day-grid cell is 44 px tall but ~20 px wide in a 7-column grid at 390 px — that is the grid
+geometry, not a class I can fix without breaking the Lun–Dom row, and the cells are flush neighbours
+with no dead space between them, so the effective target is the full row height.
+
+On the flex-row regression risk the entry flags: the board card button went 40→44 px, which takes 4 px
+from the title column. Re-rendered the card at 390 px with a long title — it wraps to two lines as
+before, the effort badge stays on the row, no overflow.
+
+Also gave the bottom-nav "+" link and the ajustes copy-code button real accessible names (`es.nav.newTask`,
+`es.settings.copyCode`) — both were icon-only with no label at all.
+
+**Fix applied**
+`src/components/board-view.tsx`, `src/components/app-shell.tsx`,
+`src/app/(app)/casa/[id]/nueva/page.tsx`, `src/app/(app)/casa/[id]/ajustes/page.tsx`,
+`src/app/(app)/onboarding/page.tsx` — every Casa-owned interactive control is now ≥ 44 px tall
+(`w-11 h-11` / `size-11` / `min-h-11`); the shared `ui/button.tsx` scale is untouched.
+**Before:** board complete/undo 40×40, back arrows and copy-code 32×32 (`size="icon"`), day-grid and
+pill controls 32–36 px tall, app-shell header buttons 28 px.
+**After, measured at 390×844:** board button 44×44, back arrows 44×44, copy-code 44×44, day-grid 44,
+assignee/recurrence pills 44, dreaded-task pills 44, effort cards 52, header buttons 44, bottom-nav
+links 44 — Casa call sites below 44 px: **0**.
+Evidence: `qa/reports/2026-09-14/CASA-fix-a11y-measurements.txt`.
 
 ---
 
@@ -635,7 +726,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | A11Y |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-A11Y-001 |
 
@@ -704,8 +795,20 @@ the iOS auto-zoom the flag was hiding).
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the suggested fix as written: dropped `maximumScale` and added nothing in its place. Checked the
+premise first — the flag is normally there to stop iOS zooming a focused input, and `ui/input.tsx`
+already renders `text-base` with only a `md:text-sm` override, so every input on the mobile viewport
+is 16 px and the auto-zoom cannot come back. Measured that too rather than assuming it.
+
+Verified live, signed out, in headless Chromium at 390×844 — this one needed no session.
+
+**Fix applied**
+`src/app/layout.tsx` — removed `maximumScale: 1` from the `viewport` export so pinch-zoom works again.
+**Before:** `"width=device-width, initial-scale=1, maximum-scale=1"`.
+**After:** `"width=device-width, initial-scale=1"` — no `maximum-scale`, no `user-scalable=no`.
+Input font size on `/login` measured `16px`, so the iOS auto-zoom the flag was masking stays prevented.
+Evidence: `qa/reports/2026-09-14/CASA-fix-a11y-measurements.txt`, screenshot `qa/reports/2026-09-14/CASA-fix-login-390.png`.
 
 ---
 
