@@ -81,15 +81,24 @@ export default function AjustesPage() {
     init()
   }, [])
 
+  // Only the owner can update `households` — RLS blocks everyone else, and a
+  // blocked UPDATE matches zero rows without raising an error, so a member used
+  // to get "¡Guardado!" for a change that was thrown away (CASA-010).
+  const isOwner = members.some(
+    (m) => m.profile_id === userId && m.role === 'owner'
+  )
+
   async function handleSave() {
     setSaving(true)
     try {
-      await updateHousehold(supabase, householdId, {
-        name: name.trim(),
-        week_end_day: weekEndDay,
-        reward_text: rewardText.trim() || null,
-        dreaded_template_id: dreadedTemplateId,
-      })
+      if (isOwner) {
+        await updateHousehold(supabase, householdId, {
+          name: name.trim(),
+          week_end_day: weekEndDay,
+          reward_text: rewardText.trim() || null,
+          dreaded_template_id: dreadedTemplateId,
+        })
+      }
       if (phone.trim()) {
         await updatePhone(supabase, userId, phone.trim())
       }
@@ -145,6 +154,7 @@ export default function AjustesPage() {
               id="houseName"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              disabled={!isOwner}
               className="h-10"
             />
           </div>
@@ -156,7 +166,8 @@ export default function AjustesPage() {
                   key={d}
                   type="button"
                   onClick={() => setWeekEndDay(d)}
-                  className={`py-2 rounded-lg text-xs font-medium cursor-pointer transition-all ${
+                  disabled={!isOwner}
+                  className={`py-2 rounded-lg text-xs font-medium cursor-pointer transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
                     weekEndDay === d
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted hover:bg-muted/80'
@@ -174,9 +185,15 @@ export default function AjustesPage() {
               placeholder={es.settings.weeklyPrizePlaceholder}
               value={rewardText}
               onChange={(e) => setRewardText(e.target.value)}
+              disabled={!isOwner}
               className="h-10"
             />
           </div>
+          {!isOwner && (
+            <p className="text-xs text-muted-foreground">
+              {es.settings.ownerOnly}
+            </p>
+          )}
         </CardContent>
       </Card>
 
@@ -194,7 +211,8 @@ export default function AjustesPage() {
             <button
               type="button"
               onClick={() => setDreadedTemplateId(null)}
-              className={`px-3 py-2 rounded-lg border text-sm text-left cursor-pointer transition-all ${
+              disabled={!isOwner}
+              className={`px-3 py-2 rounded-lg border text-sm text-left cursor-pointer transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
                 !dreadedTemplateId ? 'border-primary bg-primary/10' : 'border-border'
               }`}
             >
@@ -205,7 +223,8 @@ export default function AjustesPage() {
                 key={t.id}
                 type="button"
                 onClick={() => setDreadedTemplateId(t.id)}
-                className={`px-3 py-2 rounded-lg border text-sm text-left cursor-pointer transition-all ${
+                disabled={!isOwner}
+                className={`px-3 py-2 rounded-lg border text-sm text-left cursor-pointer transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
                   dreadedTemplateId === t.id ? 'border-destructive bg-destructive/10' : 'border-border'
                 }`}
               >
@@ -215,6 +234,11 @@ export default function AjustesPage() {
             {templates.length === 0 && (
               <p className="text-sm text-muted-foreground">
                 Creá tareas recurrentes primero
+              </p>
+            )}
+            {!isOwner && (
+              <p className="text-xs text-muted-foreground">
+                {es.settings.ownerOnly}
               </p>
             )}
           </div>

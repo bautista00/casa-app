@@ -16,6 +16,11 @@ export const es = {
     enterName: 'Tu nombre',
     enterEmoji: 'Elegí tu emoji',
     createProfile: 'Crear perfil',
+    verifying: 'Estamos verificando tu enlace...',
+    linkExpired: 'El enlace ya venció',
+    linkExpiredHelp:
+      'Puede que lo hayas usado antes o que haya pasado mucho tiempo. Pedí uno nuevo y listo.',
+    backToLogin: 'Volver a iniciar sesión',
   },
   onboarding: {
     title: '¡Bienvenido a Casa!',
@@ -48,6 +53,7 @@ export const es = {
     dueDate: 'Vence',
     points: 'puntos',
     complete: '¡Listo!',
+    alreadyDone: 'Esa tarea ya estaba hecha',
   },
   task: {
     create: 'Crear tarea',
@@ -74,6 +80,7 @@ export const es = {
     rotate: 'Rotar entre miembros',
     save: 'Guardar',
     delete: 'Eliminar',
+    dueDateRequired: 'Elegí una fecha: sin fecha la tarea no suma puntos.',
   },
   leaderboard: {
     title: 'Tabla de posiciones',
@@ -120,6 +127,7 @@ export const es = {
     saved: '¡Guardado!',
     leaveHouse: 'Abandonar casa',
     dangerZone: 'Zona de peligro',
+    ownerOnly: 'Solo quien creó la casa puede cambiar estos ajustes.',
   },
   days: {
     0: 'Domingo',
@@ -144,6 +152,11 @@ export const es = {
     invalidCode: 'Código de invitación inválido',
     alreadyMember: 'Ya sos miembro de esta casa',
     notAuthorized: 'No tenés permiso para esta acción',
+    title: 'Se nos cayó algo',
+    description:
+      'No pudimos cargar esta parte de la casa. Probá de nuevo en un ratito.',
+    retry: 'Reintentar',
+    goHome: 'Ir al inicio',
   },
   recap: {
     subject: 'Resumen semanal',

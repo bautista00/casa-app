@@ -62,8 +62,13 @@ export default function NuevaTaskPage() {
     )
   }
 
+  // A one-off task without a due date can never be scored: both the board's
+  // week filter and the week-close snapshot select tasks by `due_date`
+  // (CASA-011), so the date is required for non-recurring tasks.
+  const missingDueDate = !isRecurring && !dueDate
+
   async function handleSave() {
-    if (!title.trim()) return
+    if (!title.trim() || missingDueDate) return
     setSaving(true)
     try {
       if (isRecurring) {
@@ -88,7 +93,7 @@ export default function NuevaTaskPage() {
           notes: notes.trim() || null,
           effort,
           assignee_id: assigneeId,
-          due_date: dueDate || null,
+          due_date: dueDate,
           created_by: userId,
         })
         toast.success('Tarea creada')
@@ -217,10 +222,18 @@ export default function NuevaTaskPage() {
               <Input
                 id="dueDate"
                 type="date"
+                required
+                aria-invalid={missingDueDate || undefined}
+                aria-describedby={missingDueDate ? 'dueDate-hint' : undefined}
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
                 className="h-10"
               />
+              {missingDueDate && (
+                <p id="dueDate-hint" className="text-xs text-destructive">
+                  {es.task.dueDateRequired}
+                </p>
+              )}
             </div>
           )}
 
@@ -337,7 +350,7 @@ export default function NuevaTaskPage() {
           <Button
             onClick={handleSave}
             className="w-full h-12 text-base font-semibold cursor-pointer"
-            disabled={saving || !title.trim()}
+            disabled={saving || !title.trim() || missingDueDate}
           >
             {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : es.task.save}
           </Button>

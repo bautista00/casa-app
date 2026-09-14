@@ -6,6 +6,7 @@ import { getCurrentWeekWinner, getWinCount, getWinStreak } from '@/lib/data/week
 import { getWeekWindow, daysRemaining } from '@/lib/domain/week'
 import { computeStandings } from '@/lib/domain/ranking'
 import { format } from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
 import { BoardView } from '@/components/board-view'
 import { Leaderboard } from '@/components/leaderboard'
 
@@ -64,8 +65,12 @@ export default async function CasaPage({
     }))
   )
 
-  // Separate tasks by category for the board
-  const today = format(now, 'yyyy-MM-dd')
+  // Separate tasks by category for the board.
+  // "Hoy" must mean today in the household's timezone, not the server's — on
+  // Vercel the server runs in UTC, so after 21:00 in Buenos Aires a plain
+  // `format(now, ...)` is already tomorrow (CASA-006). The week window above
+  // goes through the same conversion inside `getWeekWindow`.
+  const today = format(toZonedTime(now, household.timezone), 'yyyy-MM-dd')
 
   return (
     <div className="space-y-6 pb-20">

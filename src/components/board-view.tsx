@@ -1,11 +1,10 @@
 'use client'
 
-import { useState, useEffect, useOptimistic, useTransition } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { completeTask, reopenTask } from '@/lib/data/tasks'
 import type { Task, HouseholdMember } from '@/types'
 import { es } from '@/lib/i18n/es'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Check, Undo2, AlertCircle, Calendar, Zap, Flame, Dumbbell } from 'lucide-react'
@@ -57,6 +56,44 @@ function groupTasks(tasks: Task[], today: string, weekStart: string, weekEnd: st
   return groups
 }
 
+/**
+ * Re-attach joined profiles to a realtime payload (CASA-015).
+ *
+ * Supabase Realtime delivers the raw `tasks` row — Postgres logical replication
+ * carries no joined relations — so `assignee` would be dropped on every update.
+ * Resolve it from the members list (which also covers a re-assignment), and fall
+ * back to what the card already had when the profile isn't in the list.
+ */
+function withJoins(next: Task, members: HouseholdMember[], prev?: Task): Task {
+  const profileOf = (id: string | null) =>
+    id ? members.find((m) => m.profile_id === id)?.profile : undefined
+
+  return {
+    ...next,
+    assignee:
+      profileOf(next.assignee_id) ??
+      (prev?.assignee_id === next.assignee_id ? prev?.assignee : undefined),
+    completed_by_profile:
+      profileOf(next.completed_by) ??
+      (prev?.completed_by === next.completed_by
+        ? prev?.completed_by_profile
+        : undefined),
+  }
+}
+
+/**
+ * PostgREST turns "zero rows returned" into an error because the query uses
+ * `.single()`. On `completeTask` that means the row was no longer `open` — i.e.
+ * it was already done (CASA-012), not a failure the member should see.
+ */
+function isNoRowsError(err: unknown): boolean {
+  return (
+    typeof err === 'object' &&
+    err !== null &&
+    (err as { code?: string }).code === 'PGRST116'
+  )
+}
+
 const effortConfig = {
   rapida: { icon: Zap, label: '1pt', className: 'text-effort-rapida' },
   normal: { icon: Flame, label: '3pts', className: 'text-effort-normal' },
@@ -65,12 +102,12 @@ const effortConfig = {
 
 function TaskCard({
   task,
-  userId,
+  busy,
   onComplete,
   onReopen,
 }: {
   task: Task
-  userId: string
+  busy: boolean
   onComplete: (id: string) => void
   onReopen: (id: string) => void
 }) {
@@ -93,6 +130,7 @@ function TaskCard({
         className={`w-10 h-10 rounded-full shrink-0 cursor-pointer ${
           isDone ? 'border-success text-success' : ''
         }`}
+        disabled={busy}
         onClick={() => (isDone ? onReopen(task.id) : onComplete(task.id))}
       >
         {isDone ? <Undo2 className="w-4 h-4" /> : <Check className="w-5 h-5" />}
@@ -142,7 +180,24 @@ export function BoardView({
 }: BoardViewProps) {
   const [tasks, setTasks] = useState(initialTasks)
   const supabase = createClient()
-  const [isPending, startTransition] = useTransition()
+
+  // In-flight guard (CASA-012). The ref is the actual lock — two taps in the
+  // same tick would both read a stale `busy` from the render closure — while the
+  // state drives the disabled button.
+  const inFlight = useRef<Set<string>>(new Set())
+  const [busy, setBusy] = useState<string[]>([])
+
+  function lock(taskId: string): boolean {
+    if (inFlight.current.has(taskId)) return false
+    inFlight.current.add(taskId)
+    setBusy((b) => [...b, taskId])
+    return true
+  }
+
+  function unlock(taskId: string) {
+    inFlight.current.delete(taskId)
+    setBusy((b) => b.filter((id) => id !== taskId))
+  }
 
   // Realtime subscription
   useEffect(() => {
@@ -158,10 +213,18 @@ export function BoardView({
         },
         (payload) => {
           if (payload.eventType === 'INSERT') {
-            setTasks((prev) => [...prev, payload.new as Task])
-          } else if (payload.eventType === 'UPDATE') {
+            const incoming = payload.new as Task
             setTasks((prev) =>
-              prev.map((t) => (t.id === (payload.new as Task).id ? (payload.new as Task) : t))
+              prev.some((t) => t.id === incoming.id)
+                ? prev
+                : [...prev, withJoins(incoming, members)]
+            )
+          } else if (payload.eventType === 'UPDATE') {
+            const incoming = payload.new as Task
+            setTasks((prev) =>
+              prev.map((t) =>
+                t.id === incoming.id ? withJoins(incoming, members, t) : t
+              )
             )
           } else if (payload.eventType === 'DELETE') {
             setTasks((prev) =>
@@ -175,9 +238,12 @@ export function BoardView({
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [householdId, supabase])
+  }, [householdId, supabase, members])
 
   async function handleComplete(taskId: string) {
+    if (!lock(taskId)) return
+    const previous = tasks.find((t) => t.id === taskId)
+
     // Optimistic update
     setTasks((prev) =>
       prev.map((t) =>
@@ -189,20 +255,31 @@ export function BoardView({
     try {
       await completeTask(supabase, taskId, userId)
       toast.success(es.board.complete)
-    } catch {
-      // Revert on error
-      setTasks((prev) =>
-        prev.map((t) =>
-          t.id === taskId
-            ? { ...t, status: 'open' as const, completed_by: null, completed_at: null }
-            : t
+    } catch (err) {
+      if (isNoRowsError(err)) {
+        // Already done — by an earlier tap or by another member. The database
+        // is right and the card is right; only the toast changes.
+        toast.info(es.board.alreadyDone)
+      } else {
+        // Revert on a real failure
+        setTasks((prev) =>
+          prev.map((t) =>
+            t.id === taskId
+              ? previous ?? { ...t, status: 'open' as const, completed_by: null, completed_at: null }
+              : t
+          )
         )
-      )
-      toast.error(es.errors.generic)
+        toast.error(es.errors.generic)
+      }
+    } finally {
+      unlock(taskId)
     }
   }
 
   async function handleReopen(taskId: string) {
+    if (!lock(taskId)) return
+    const previous = tasks.find((t) => t.id === taskId)
+
     setTasks((prev) =>
       prev.map((t) =>
         t.id === taskId
@@ -213,7 +290,12 @@ export function BoardView({
     try {
       await reopenTask(supabase, taskId)
     } catch {
+      if (previous) {
+        setTasks((prev) => prev.map((t) => (t.id === taskId ? previous : t)))
+      }
       toast.error(es.errors.generic)
+    } finally {
+      unlock(taskId)
     }
   }
 
@@ -262,7 +344,7 @@ export function BoardView({
                   <TaskCard
                     key={task.id}
                     task={task}
-                    userId={userId}
+                    busy={busy.includes(task.id)}
                     onComplete={handleComplete}
                     onReopen={handleReopen}
                   />

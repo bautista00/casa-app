@@ -6,7 +6,8 @@ import { es } from '@/lib/i18n/es'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Trophy, Flame, Crown } from 'lucide-react'
-import { format, parseISO } from 'date-fns'
+import { formatWeekRange } from '@/lib/domain/week'
+import { parseISO } from 'date-fns'
 
 export default async function HistorialPage({
   params,
@@ -116,16 +117,21 @@ function WeekCard({
   members: Awaited<ReturnType<typeof getHouseholdMembers>>
 }) {
   const winnerMember = members.find((m) => m.profile_id === week.winner_profile_id)
-  const startStr = format(parseISO(week.week_start), 'd MMM')
-  const endStr = format(parseISO(week.week_end), 'd MMM')
+  // `weeks.week_end` is the EXCLUSIVE closing boundary (the week-close cron
+  // stores the first instant of the following week), so printing it verbatim
+  // made every week read as 8 days (CASA-021). `formatWeekRange` is the single
+  // definition of how a week reads and already subtracts the day.
+  const range = formatWeekRange({
+    start: parseISO(week.week_start),
+    end: parseISO(week.week_end),
+    weekEndDay: parseISO(week.week_end).getDay(),
+  })
 
   return (
     <Card className="border">
       <CardContent className="py-4 flex items-center gap-3">
         <div className="flex-1 min-w-0">
-          <p className="text-sm text-muted-foreground">
-            {startStr} – {endStr}
-          </p>
+          <p className="text-sm text-muted-foreground">{range}</p>
           {winnerMember?.profile ? (
             <p className="font-semibold flex items-center gap-1.5 mt-1">
               <span>👑</span>
