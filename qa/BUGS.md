@@ -41,25 +41,25 @@ Side exits: `REOPENED` · `NEEDS-INFO` · `WONTFIX` · `CANNOT-REPRODUCE` · `DU
 | CASA-003 | Cron routes accept `Authorization: Bearer undefined` when `CRON_SECRET` is unset | S1 | P0 | SEC | backend-dev | OPEN |
 | CASA-004 | The week runs from the chosen end-day instead of to it — the whole week is shifted one day | S1 | P0 | DOM | backend-dev | OPEN |
 | CASA-005 | Any signed-in user can read every Casa user's name and phone number | S1 | P0 | SEC | backend-dev | OPEN |
-| CASA-006 | Board decides "today" in the server's timezone, so after 21:00 in Argentina it is a day ahead | S2 | P1 | BOARD | frontend-dev | OPEN |
+| CASA-006 | Board decides "today" in the server's timezone, so after 21:00 in Argentina it is a day ahead | S2 | P1 | BOARD | frontend-dev | ASSIGNED |
 | CASA-007 | "Rotar entre miembros" gives the first 15 days of a rotating task to the same person | S2 | P1 | CRON | backend-dev | OPEN |
-| CASA-008 | Any data-layer error shows the raw Next.js error page instead of a Spanish message | S2 | P1 | BOARD | frontend-dev | OPEN |
+| CASA-008 | Any data-layer error shows the raw Next.js error page instead of a Spanish message | S2 | P1 | BOARD | frontend-dev | ASSIGNED |
 | CASA-009 | A non-member with a join code can add *any other user* to a household | S2 | P1 | SEC | backend-dev | OPEN |
-| CASA-010 | Non-owner members get "¡Guardado!" but their settings changes are silently discarded | S2 | P1 | SET | frontend-dev | OPEN |
-| CASA-011 | Tasks with no due date show a points badge but can never score | S2 | P1 | BOARD | frontend-dev | OPEN |
-| CASA-012 | Double-tapping "hecha" un-completes the task in the UI and shows an error | S2 | P2 | BOARD | frontend-dev | OPEN |
+| CASA-010 | Non-owner members get "¡Guardado!" but their settings changes are silently discarded | S2 | P1 | SET | frontend-dev | ASSIGNED |
+| CASA-011 | Tasks with no due date show a points badge but can never score | S2 | P1 | BOARD | frontend-dev | ASSIGNED |
+| CASA-012 | Double-tapping "hecha" un-completes the task in the UI and shows an error | S2 | P2 | BOARD | frontend-dev | ASSIGNED |
 | CASA-013 | `npm run lint` fails — `require()` import in `src/lib/supabase/server.ts` | S3 | P1 | PERF | backend-dev | OPEN |
-| CASA-014 | `/callback` spins forever when the magic link is expired or invalid | S3 | P1 | AUTH | frontend-dev | OPEN |
-| CASA-015 | Realtime task updates drop the assignee, so the name vanishes from the card | S3 | P2 | BOARD | frontend-dev | OPEN |
-| CASA-016 | 14 user-visible strings (15 sites) are hardcoded instead of living in `src/lib/i18n/es.ts` | S3 | P2 | I18N | frontend-dev | OPEN |
-| CASA-017 | Tuteo instead of voseo: "Elige la cena del viernes" | S3 | P2 | I18N | frontend-dev | OPEN |
-| CASA-018 | `maximum-scale=1` blocks pinch-zoom on every page | S3 | P2 | A11Y | frontend-dev | OPEN |
-| CASA-019 | Icon-only buttons are 32–40 px — below the 44 px touch target on the primary device | S3 | P2 | A11Y | frontend-dev | OPEN |
-| CASA-020 | Gamification colours fail WCAG AA contrast (winner's rank pill measures 1.77:1) | S3 | P2 | A11Y | frontend-dev | OPEN |
-| CASA-021 | History shows an 8-day week: the exclusive end boundary is printed as the last day | S3 | P2 | HIST | frontend-dev | OPEN |
-| CASA-022 | A weekly recurring task saved with no weekday is accepted and never generates anything | S3 | P2 | TASK | frontend-dev | OPEN |
-| CASA-023 | A member can add a phone number but can never remove it | S3 | P2 | SET | frontend-dev | OPEN |
-| CASA-024 | `/manifest.json` is declared in metadata but does not exist | S3 | P3 | PERF | frontend-dev | OPEN |
+| CASA-014 | `/callback` spins forever when the magic link is expired or invalid | S3 | P1 | AUTH | frontend-dev | ASSIGNED |
+| CASA-015 | Realtime task updates drop the assignee, so the name vanishes from the card | S3 | P2 | BOARD | frontend-dev | ASSIGNED |
+| CASA-016 | 14 user-visible strings (15 sites) are hardcoded instead of living in `src/lib/i18n/es.ts` | S3 | P2 | I18N | frontend-dev | ASSIGNED |
+| CASA-017 | Tuteo instead of voseo: "Elige la cena del viernes" | S3 | P2 | I18N | frontend-dev | ASSIGNED |
+| CASA-018 | `maximum-scale=1` blocks pinch-zoom on every page | S3 | P2 | A11Y | frontend-dev | ASSIGNED |
+| CASA-019 | Icon-only buttons are 32–40 px — below the 44 px touch target on the primary device | S3 | P2 | A11Y | frontend-dev | ASSIGNED |
+| CASA-020 | Gamification colours fail WCAG AA contrast (winner's rank pill measures 1.77:1) | S3 | P2 | A11Y | frontend-dev | ASSIGNED |
+| CASA-021 | History shows an 8-day week: the exclusive end boundary is printed as the last day | S3 | P2 | HIST | frontend-dev | ASSIGNED |
+| CASA-022 | A weekly recurring task saved with no weekday is accepted and never generates anything | S3 | P2 | TASK | frontend-dev | ASSIGNED |
+| CASA-023 | A member can add a phone number but can never remove it | S3 | P2 | SET | frontend-dev | ASSIGNED |
+| CASA-024 | `/manifest.json` is declared in metadata but does not exist | S3 | P3 | PERF | frontend-dev | ASSIGNED |
 
 ## Fix order
 
@@ -105,7 +105,7 @@ _Set by QA at the end of each cycle. Work top-down._
 | **Priority** | P3 |
 | **Area** | PERF |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-PERF-002 |
 
@@ -200,7 +200,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | SET |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport n/a |
 | **Test case** | TC-SET-004 |
 
@@ -275,7 +275,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | TASK |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E0 static + L1 probe · viewport 390×844 |
 | **Test case** | TC-TASK-006 |
 
@@ -361,7 +361,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | HIST |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-HIST-002 |
 
@@ -440,7 +440,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | A11Y |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-A11Y-003 |
 
@@ -542,7 +542,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | A11Y |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-A11Y-002 |
 
@@ -632,7 +632,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | A11Y |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-A11Y-001 |
 
@@ -714,7 +714,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | I18N |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport n/a |
 | **Test case** | TC-I18N-002 |
 
@@ -787,7 +787,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | I18N |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport n/a |
 | **Test case** | TC-I18N-001 |
 
@@ -899,7 +899,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-BOARD-005 |
 
@@ -985,7 +985,7 @@ n/a
 | **Priority** | P1 |
 | **Area** | AUTH |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-AUTH-006 |
 
@@ -1187,7 +1187,7 @@ The 118 remaining warnings are noise, most of them from `.claude/skills/**` vend
 | **Priority** | P2 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-BOARD-004 |
 
@@ -1300,7 +1300,7 @@ record the signature change in `CONTRACT.md`. The client-side guard alone closes
 | **Priority** | P1 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-LEAD-004 |
 
@@ -1395,7 +1395,7 @@ in `CONTRACT.md`. Two scorers that disagree is the actual defect here.
 | **Priority** | P1 |
 | **Area** | SET |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E0 static + local Postgres RLS harness · viewport 390×844 |
 | **Test case** | TC-SET-002 |
 
@@ -1630,7 +1630,7 @@ the same change.
 | **Priority** | P1 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-BOARD-006 |
 
@@ -1838,7 +1838,7 @@ n/a
 | **Priority** | P1 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | OPEN |
+| **Status** | ASSIGNED |
 | **Found in** | RUN-2026-09-14 · env E0 static + L1 probe · viewport 390×844 |
 | **Test case** | TC-BOARD-003 |
 
