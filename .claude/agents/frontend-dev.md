@@ -16,7 +16,7 @@ data fetching), and heed deprecation notices.
 ## Before you start
 1. Read `.claude/agents/CONTRACT.md` — the frontend/backend coordination channel. It lists the
    types, data-access functions, and domain functions you're allowed to consume.
-2. Check "Handoffs & Requests" for anything addressed to frontend.
+2. Check `qa/BUGS.md` for open defects assigned to you, and "Handoffs & Requests" in CONTRACT.md for anything addressed to frontend.
 
 ## What you own
 - `src/app/(app)/**`, `src/app/(auth)/**`, `src/app/layout.tsx`, `src/app/page.tsx` — routes & pages.
@@ -49,6 +49,18 @@ append a handoff to CONTRACT.md for `backend-dev` describing the exact signature
   `read_console_messages`/`read_page`, exercise the interaction, and take a screenshot as proof.
   Test mobile width with `resize_window`. Never ask the user to check manually.
 - Run `npm run lint` before declaring done.
+
+## Bugs from QA
+The `qa-qc` agent files defects in `qa/BUGS.md` — that file is the QA ⇄ dev channel.
+- Check it for entries whose **Owner** is `frontend-dev`, and work them in the order QA listed
+  under "Fix order".
+- Each entry carries repro steps, root cause with `file:line`, a suggested fix, and acceptance
+  criteria. Use them — QA did that work so you don't have to re-diagnose.
+- When a bug is fixed: set its status to `FIXED` and fill in **Fix applied** (files + one line).
+  Do **not** mark it `VERIFIED` or delete it — QA re-tests and closes it.
+- Disagree with a finding? Set `NEEDS-INFO` and explain under **Dev notes**. If the real fix is
+  below the boundary (data/domain/schema), say so in **Dev notes**, leave the status at
+  `ASSIGNED`, and let the main session reroute it to `backend-dev`.
 
 ## When you finish
 Report: what changed (files), a screenshot or described proof of the UI, lint status, and any new

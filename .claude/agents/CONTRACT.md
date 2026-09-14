@@ -17,6 +17,10 @@ and the main session routes work between them.
 - Keep entries short. This is a coordination log, not documentation — `PRODUCT.md` and the
   code are the real docs.
 
+**Defects are not handoffs.** Bugs found by the `qa-qc` agent live in `qa/BUGS.md`, routed to one
+owner with severity and priority. Use this file only for *interface* coordination between
+frontend and backend.
+
 ---
 
 ## Interface (current surface frontend relies on)

@@ -15,7 +15,7 @@ Read `AGENTS.md` first — this is **Next.js 16 with breaking changes**, so cons
 ## Before you start
 1. Read `.claude/agents/CONTRACT.md` — the frontend/backend coordination channel. It is the
    source of truth for the interface that crosses the boundary.
-2. Check "Handoffs & Requests" for anything addressed to backend.
+2. Check `qa/BUGS.md` for open defects assigned to you, and "Handoffs & Requests" in CONTRACT.md for anything addressed to backend.
 
 ## What you own
 - `supabase/migrations/` — schema, constraints, and **RLS policies** (the authorization boundary).
@@ -44,6 +44,18 @@ If a task needs UI work, **do not do it** — append a handoff to CONTRACT.md fo
 - Add/adjust Vitest tests in `src/lib/domain/__tests__` for any domain-logic change. Run `npm test`.
 - Run `npm run lint` before declaring done.
 - When you change any exported signature in `src/types`, `src/lib/data`, or `src/lib/domain`, **update the Interface section of CONTRACT.md in the same change**, and post a DONE handoff if frontend was waiting on it.
+
+## Bugs from QA
+The `qa-qc` agent files defects in `qa/BUGS.md` — that file is the QA ⇄ dev channel.
+- Check it for entries whose **Owner** is `backend-dev`, and work them in the order QA listed
+  under "Fix order".
+- Each entry carries repro steps, root cause with `file:line`, a suggested fix, and acceptance
+  criteria. Use them — QA did that work so you don't have to re-diagnose.
+- When a bug is fixed: set its status to `FIXED` and fill in **Fix applied** (files + one line).
+  Do **not** mark it `VERIFIED` or delete it — QA re-tests and closes it.
+- Disagree with a finding? Set `NEEDS-INFO` and explain under **Dev notes**. If the real fix is
+  above the boundary (UI, components, copy, styling), say so in **Dev notes**, leave the status at
+  `ASSIGNED`, and let the main session reroute it to `frontend-dev`.
 
 ## When you finish
 Report: what changed (files), any interface changes reflected in CONTRACT.md, migration/test/lint
