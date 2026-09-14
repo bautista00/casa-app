@@ -1,0 +1,103 @@
+KEYBOARD FOCUS on submit button: {"matchesFocusVisible":true,"outline":"none 0px","boxShadow":"rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0 0 0 / 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px","borderColor":"oklab(0 0 0 / 0)"}
+CONTRAST (sRGB canvas readback; AA: 4.5 normal text, 3.0 large/UI):
+{
+ "_bg": {
+  "card": [
+   250,
+   252,
+   255
+  ],
+  "body": [
+   242,
+   245,
+   252
+  ]
+ },
+ "text-accent": {
+  "rgb": [
+   243,
+   130,
+   29
+  ],
+  "onCard": 2.55,
+  "onBody": 2.4
+ },
+ "text-muted-foreground": {
+  "rgb": [
+   81,
+   88,
+   105
+  ],
+  "onCard": 6.93,
+  "onBody": 6.52
+ },
+ "text-primary": {
+  "rgb": [
+   47,
+   88,
+   200
+  ],
+  "onCard": 6.1,
+  "onBody": 5.74
+ },
+ "text-crown": {
+  "rgb": [
+   246,
+   185,
+   0
+  ],
+  "onCard": 1.72,
+  "onBody": 1.62
+ },
+ "text-success": {
+  "rgb": [
+   0,
+   173,
+   91
+  ],
+  "onCard": 2.87,
+  "onBody": 2.7
+ },
+ "text-destructive": {
+  "rgb": [
+   231,
+   0,
+   11
+  ],
+  "onCard": 4.64,
+  "onBody": 4.37
+ },
+ "text-effort-pesada": {
+  "rgb": [
+   240,
+   80,
+   61
+  ],
+  "onCard": 3.45,
+  "onBody": 3.25
+ },
+ "text-effort-rapida": {
+  "rgb": [
+   67,
+   192,
+   122
+  ],
+  "onCard": 2.26,
+  "onBody": 2.12
+ },
+ "text-accent-foreground": {
+  "rgb": [
+   55,
+   24,
+   1
+  ],
+  "onCard": 15.8,
+  "onBody": 14.88
+ },
+ "primary-fg on primary": {
+  "onPrimary": 6.1
+ },
+ "white on crown": {
+  "r": 1.77
+ }
+}

@@ -1,0 +1,68 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.0 /home/user/casa-app
+
+
+full tie, 4 members, all 3 pts
+  standings: a(pts=3,done=1,rank=1) b(pts=3,done=1,rank=1) c(pts=3,done=1,rank=1) d(pts=3,done=1,rank=1)
+  winner=null lastPlace=null isTie=true
+
+top tie only (a=b=5, c=3, d=1)
+  standings: a(pts=5,done=1,rank=1) b(pts=5,done=1,rank=1) c(pts=3,done=1,rank=3) d(pts=1,done=1,rank=4)
+  winner=null lastPlace=d isTie=true
+
+bottom tie only (a=5,b=3,c=d=1)
+  standings: a(pts=5,done=1,rank=1) b(pts=3,done=1,rank=2) c(pts=1,done=1,rank=3) d(pts=1,done=1,rank=3)
+  winner=a lastPlace=null isTie=false
+
+everyone zero, 4 members
+  standings: a(pts=0,done=0,rank=1) b(pts=0,done=0,rank=1) c(pts=0,done=0,rank=1) d(pts=0,done=0,rank=1)
+  winner=null lastPlace=null isTie=true
+
+2 members, clear winner
+  standings: a(pts=5,done=1,rank=1) b(pts=0,done=0,rank=2)
+  winner=a lastPlace=b isTie=false
+
+2 members, tie
+  standings: a(pts=5,done=1,rank=1) b(pts=5,done=1,rank=1)
+  winner=null lastPlace=null isTie=true
+
+1 member, 0 points
+  standings: a(pts=0,done=0,rank=1)
+  winner=a lastPlace=null isTie=false
+
+1 member, some points
+  standings: a(pts=5,done=1,rank=1)
+  winner=a lastPlace=null isTie=false
+
+empty household
+  standings: 
+  winner=null lastPlace=null isTie=true
+
+3 members middle tie (a=5,b=c=3)
+  standings: a(pts=5,done=1,rank=1) b(pts=3,done=1,rank=2) c(pts=3,done=1,rank=2)
+  winner=a lastPlace=null isTie=false
+
+points tie broken by tasks (a=1x3, b=3x1)
+  standings: b(pts=3,done=3,rank=1) a(pts=3,done=1,rank=2) c(pts=0,done=0,rank=3)
+  winner=b lastPlace=c isTie=false
+
+ghost member zz completed a 99pt task
+  standings: a(pts=5,done=1,rank=1) b(pts=0,done=0,rank=2)
+  winner=a lastPlace=b isTie=false
+
+ranks for 5,5,3,3 => 1,1,3,3 (competition ranking expects 1,1,3,3)
+ranks for 5,3,3,1 => 1,2,2,4 (expects 1,2,2,4)
+ranks for 5,5,5,1 => 1,1,1,4 (expects 1,1,1,4)
+  -> winner= null lastPlace= d
+ ✓ qa/tmp/probe-rank.test.ts > PROBE ranking.ts > tie matrix 3ms
+ ✓ qa/tmp/probe-rank.test.ts > PROBE ranking.ts > task completed by a non-member (left the household) 0ms
+ ✓ qa/tmp/probe-rank.test.ts > PROBE ranking.ts > rank sequence sanity for 4 members with ties 1ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  00:19:20
+   Duration  229ms (transform 61%, import 27%, tests 6%, worker 6%)
+

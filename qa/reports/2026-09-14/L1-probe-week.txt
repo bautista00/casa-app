@@ -1,0 +1,66 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.0 /home/user/casa-app
+
+
+--- weekEndDay = 0 (Sunday) — doc says week should run Mon 00:00 -> Sun 23:59:59 ---
+nowUTC=2026-09-13T15:00:00.000Z (ART 2026-09-13 Sun 12:00) | start=2026-09-13 Sun 00:00 | end(excl)=2026-09-20 Sun 00:00 | lastIncludedDay=2026-09-19 Sat | daysRemaining=7 | range="13 Sep – 19 Sep"
+nowUTC=2026-09-14T15:00:00.000Z (ART 2026-09-14 Mon 12:00) | start=2026-09-13 Sun 00:00 | end(excl)=2026-09-20 Sun 00:00 | lastIncludedDay=2026-09-19 Sat | daysRemaining=6 | range="13 Sep – 19 Sep"
+nowUTC=2026-09-15T15:00:00.000Z (ART 2026-09-15 Tue 12:00) | start=2026-09-13 Sun 00:00 | end(excl)=2026-09-20 Sun 00:00 | lastIncludedDay=2026-09-19 Sat | daysRemaining=5 | range="13 Sep – 19 Sep"
+nowUTC=2026-09-16T15:00:00.000Z (ART 2026-09-16 Wed 12:00) | start=2026-09-13 Sun 00:00 | end(excl)=2026-09-20 Sun 00:00 | lastIncludedDay=2026-09-19 Sat | daysRemaining=4 | range="13 Sep – 19 Sep"
+nowUTC=2026-09-17T15:00:00.000Z (ART 2026-09-17 Thu 12:00) | start=2026-09-13 Sun 00:00 | end(excl)=2026-09-20 Sun 00:00 | lastIncludedDay=2026-09-19 Sat | daysRemaining=3 | range="13 Sep – 19 Sep"
+nowUTC=2026-09-18T15:00:00.000Z (ART 2026-09-18 Fri 12:00) | start=2026-09-13 Sun 00:00 | end(excl)=2026-09-20 Sun 00:00 | lastIncludedDay=2026-09-19 Sat | daysRemaining=2 | range="13 Sep – 19 Sep"
+nowUTC=2026-09-19T15:00:00.000Z (ART 2026-09-19 Sat 12:00) | start=2026-09-13 Sun 00:00 | end(excl)=2026-09-20 Sun 00:00 | lastIncludedDay=2026-09-19 Sat | daysRemaining=1 | range="13 Sep – 19 Sep"
+nowUTC=2026-09-20T15:00:00.000Z (ART 2026-09-20 Sun 12:00) | start=2026-09-20 Sun 00:00 | end(excl)=2026-09-27 Sun 00:00 | lastIncludedDay=2026-09-26 Sat | daysRemaining=7 | range="20 Sep – 26 Sep"
+
+--- weekEndDay = 1 (Monday) ---
+ART 2026-09-13 Sun | start=2026-09-07 Mon 00:00 end=2026-09-14 Mon 00:00 daysRemaining=1
+ART 2026-09-14 Mon | start=2026-09-14 Mon 00:00 end=2026-09-21 Mon 00:00 daysRemaining=7
+ART 2026-09-15 Tue | start=2026-09-14 Mon 00:00 end=2026-09-21 Mon 00:00 daysRemaining=6
+ART 2026-09-16 Wed | start=2026-09-14 Mon 00:00 end=2026-09-21 Mon 00:00 daysRemaining=5
+ART 2026-09-17 Thu | start=2026-09-14 Mon 00:00 end=2026-09-21 Mon 00:00 daysRemaining=4
+ART 2026-09-18 Fri | start=2026-09-14 Mon 00:00 end=2026-09-21 Mon 00:00 daysRemaining=3
+ART 2026-09-19 Sat | start=2026-09-14 Mon 00:00 end=2026-09-21 Mon 00:00 daysRemaining=2
+ART 2026-09-20 Sun | start=2026-09-14 Mon 00:00 end=2026-09-21 Mon 00:00 daysRemaining=1
+
+--- membership of each day in the window computed on Wednesday 2026-09-16 ---
+window: 2026-09-13 Sun 00:00 -> 2026-09-20 Sun 00:00
+  2026-09-11 Fri inWeek=false
+  2026-09-12 Sat inWeek=false
+  2026-09-13 Sun inWeek=true
+  2026-09-14 Mon inWeek=true
+  2026-09-15 Tue inWeek=true
+  2026-09-16 Wed inWeek=true
+  2026-09-17 Thu inWeek=true
+  2026-09-18 Fri inWeek=true
+  2026-09-19 Sat inWeek=true
+  2026-09-20 Sun inWeek=false
+  2026-09-21 Mon inWeek=false
+
+--- getClosableWeek, weekEndDay=0 ---
+ART 2026-09-13 Sun | closable=09-06->09-13 | current=09-13->09-20 | guard(currentStart===closableStart)=false
+ART 2026-09-14 Mon | closable=09-06->09-13 | current=09-13->09-20 | guard(currentStart===closableStart)=false
+ART 2026-09-15 Tue | closable=09-06->09-13 | current=09-13->09-20 | guard(currentStart===closableStart)=false
+ART 2026-09-16 Wed | closable=09-06->09-13 | current=09-13->09-20 | guard(currentStart===closableStart)=false
+ART 2026-09-17 Thu | closable=09-06->09-13 | current=09-13->09-20 | guard(currentStart===closableStart)=false
+ART 2026-09-18 Fri | closable=09-06->09-13 | current=09-13->09-20 | guard(currentStart===closableStart)=false
+ART 2026-09-19 Sat | closable=09-06->09-13 | current=09-13->09-20 | guard(currentStart===closableStart)=false
+ART 2026-09-20 Sun | closable=09-13->09-20 | current=09-20->09-27 | guard(currentStart===closableStart)=false
+
+--- 2026-09-16 21:30 ART = 2026-09-17T00:30Z ---
+server-local "today" (what casa/[id]/page.tsx computes): 2026-09-17
+household-local today: 2026-09-16
+week window: 2026-09-13 Sun 00:00 -> 2026-09-20 Sun 00:00 daysRemaining= 4
+ ✓ qa/tmp/probe-week.test.ts > PROBE week.ts > weekEndDay=0 (Sunday): window + daysRemaining for every day of one week 6ms
+ ✓ qa/tmp/probe-week.test.ts > PROBE week.ts > weekEndDay=1 (Monday) same walk 1ms
+ ✓ qa/tmp/probe-week.test.ts > PROBE week.ts > is a Sunday completion counted in the Mon-Sun week? (weekEndDay=0) 1ms
+ ✓ qa/tmp/probe-week.test.ts > PROBE week.ts > getClosableWeek across the boundary 1ms
+ ✓ qa/tmp/probe-week.test.ts > PROBE week.ts > late-night Argentina: 21:00 ART = next day UTC 0ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  00:18:39
+   Duration  1.28s (import 86%, transform 13%, tests 1%)
+

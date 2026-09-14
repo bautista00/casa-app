@@ -1,0 +1,120 @@
+
+===== / (L3-root-390) status=200 =====
+{
+ "title": "Casa — Organicen la casa juntos",
+ "lang": "es",
+ "scrollW": 390,
+ "clientW": 390,
+ "overflow": 0,
+ "small": [],
+ "iconOnly": [],
+ "inputs": [
+  {
+   "id": "email",
+   "type": "email",
+   "labelled": true
+  }
+ ],
+ "fonts": {
+  "h1": "Fredoka, \"Fredoka Fallback\"",
+  "h2": "Nunito, \"Nunito Fallback\"",
+  "body": "Nunito, \"Nunito Fallback\"",
+  "p": "Nunito, \"Nunito Fallback\"",
+  "button": "Nunito, \"Nunito Fallback\""
+ },
+ "nestedButtons": 0,
+ "bodyText": "Casa | Organicen la casa juntos | Iniciar sesión | Email | Enviar enlace mágico",
+ "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=1"
+}
+console: [log] [HMR] connected
+
+===== /login (L3-login-390) status=200 =====
+{
+ "title": "Casa — Organicen la casa juntos",
+ "lang": "es",
+ "scrollW": 390,
+ "clientW": 390,
+ "overflow": 0,
+ "small": [],
+ "iconOnly": [],
+ "inputs": [
+  {
+   "id": "email",
+   "type": "email",
+   "labelled": true
+  }
+ ],
+ "fonts": {
+  "h1": "Fredoka, \"Fredoka Fallback\"",
+  "h2": "Nunito, \"Nunito Fallback\"",
+  "body": "Nunito, \"Nunito Fallback\"",
+  "p": "Nunito, \"Nunito Fallback\"",
+  "button": "Nunito, \"Nunito Fallback\""
+ },
+ "nestedButtons": 0,
+ "bodyText": "Casa | Organicen la casa juntos | Iniciar sesión | Email | Enviar enlace mágico",
+ "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=1"
+}
+console: [log] [HMR] connected
+
+===== /callback (L3-callback-390) status=200 =====
+{
+ "title": "Casa — Organicen la casa juntos",
+ "lang": "es",
+ "scrollW": 390,
+ "clientW": 390,
+ "overflow": 0,
+ "small": [],
+ "iconOnly": [],
+ "inputs": [],
+ "fonts": {
+  "body": "Nunito, \"Nunito Fallback\""
+ },
+ "nestedButtons": 0,
+ "bodyText": "",
+ "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=1"
+}
+console: [log] [HMR] connected
+
+===== /casa/abc (L3-casa-signedout-390) status=200 =====
+{
+ "title": "Casa — Organicen la casa juntos",
+ "lang": "es",
+ "scrollW": 390,
+ "clientW": 390,
+ "overflow": 0,
+ "small": [],
+ "iconOnly": [],
+ "inputs": [
+  {
+   "id": "email",
+   "type": "email",
+   "labelled": true
+  }
+ ],
+ "fonts": {
+  "h1": "Fredoka, \"Fredoka Fallback\"",
+  "h2": "Nunito, \"Nunito Fallback\"",
+  "body": "Nunito, \"Nunito Fallback\"",
+  "p": "Nunito, \"Nunito Fallback\"",
+  "button": "Nunito, \"Nunito Fallback\""
+ },
+ "nestedButtons": 0,
+ "bodyText": "Casa | Organicen la casa juntos | Iniciar sesión | Email | Enviar enlace mágico",
+ "viewportMeta": "width=device-width, initial-scale=1, maximum-scale=1"
+}
+console: [log] [HMR] connected
+
+===== /login submit with unreachable Supabase =====
+body: Casa | Organicen la casa juntos | Iniciar sesión | Email | Enviar enlace mágico
+button disabled? null
+console: [log] [HMR] connected
+         [error] Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED
+
+===== tab order on /login =====
+BUTTON#.group/button inline-flex  outline=none/0px
+NEXTJS-PORTAL#. outline=none/0px
+BODY#.min-h-full flex flex-col outline=none/0px
+INPUT#email.w-full min-w-0 rounded-lg outline=none/0px
+BUTTON#.group/button inline-flex  outline=none/0px
+NEXTJS-PORTAL#. outline=none/0px

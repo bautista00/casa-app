@@ -1,0 +1,48 @@
+================ TEST 1: household_members SELECT as a normal member (getHouseholdMembers) ================
+SET
+SET
+psql:/tmp/claude-0/-home-user-casa-app/c86c90c5-b82e-5520-a828-4928378cd426/scratchpad/rls.sql:5: ERROR:  infinite recursion detected in policy for relation "household_members"
+RESET
+================ TEST 2: households SELECT as member of A ================
+SET
+SET
+                  id                  |     name      | join_code 
+--------------------------------------+---------------+-----------
+ aaaaaaaa-0000-0000-0000-000000000001 | Depto Palermo | AAAAAA
+(1 row)
+
+RESET
+================ TEST 3: getUserHouseholds nested select equivalent ================
+SET
+SET
+psql:/tmp/claude-0/-home-user-casa-app/c86c90c5-b82e-5520-a828-4928378cd426/scratchpad/rls.sql:15: ERROR:  infinite recursion detected in policy for relation "household_members"
+RESET
+================ TEST 4: CROSS-HOUSEHOLD PROFILE/PHONE READ (Bauti reads Mamas phone) ================
+SET
+SET
+ display_name |   phone_e164   
+--------------+----------------
+ Mama         | +5491177778888
+(1 row)
+
+RESET
+================ TEST 5: non-owner member updates household settings (ajustes save) ================
+SET
+SET
+psql:/tmp/claude-0/-home-user-casa-app/c86c90c5-b82e-5520-a828-4928378cd426/scratchpad/rls.sql:25: ERROR:  infinite recursion detected in policy for relation "household_members"
+RESET
+================ TEST 6: owner updates household settings ================
+SET
+SET
+psql:/tmp/claude-0/-home-user-casa-app/c86c90c5-b82e-5520-a828-4928378cd426/scratchpad/rls.sql:30: ERROR:  infinite recursion detected in policy for relation "household_members"
+RESET
+================ TEST 7: outsider (Mama) tries to read household A tasks/members ================
+SET
+SET
+psql:/tmp/claude-0/-home-user-casa-app/c86c90c5-b82e-5520-a828-4928378cd426/scratchpad/rls.sql:35: ERROR:  infinite recursion detected in policy for relation "household_members"
+ households_visible 
+--------------------
+                  1
+(1 row)
+
+RESET

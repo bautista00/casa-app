@@ -1,0 +1,13 @@
+/                      -> HTTP 307 | redirect:http://localhost:3000/login | 6B | 0.016224s
+/login                 -> HTTP 200 | redirect: | 20130B | 3.427896s
+/callback              -> HTTP 200 | redirect: | 16054B | 0.465849s
+/onboarding            -> HTTP 307 | redirect:http://localhost:3000/login | 6B | 0.007036s
+/casa/abc              -> HTTP 307 | redirect:http://localhost:3000/login | 6B | 0.007545s
+/casa/abc/nueva        -> HTTP 307 | redirect:http://localhost:3000/login | 6B | 0.009874s
+/casa/abc/historial    -> HTTP 307 | redirect:http://localhost:3000/login | 6B | 0.006341s
+/casa/abc/ajustes      -> HTTP 307 | redirect:http://localhost:3000/login | 6B | 0.006833s
+/nope                  -> HTTP 307 | redirect:http://localhost:3000/login | 6B | 0.006672s
+--- following redirects from / ---
+final: http://localhost:3000/login HTTP 200
+--- following redirects from /casa/abc ---
+final: http://localhost:3000/login HTTP 200

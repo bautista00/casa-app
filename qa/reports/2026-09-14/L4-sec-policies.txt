@@ -1,0 +1,69 @@
+=== S1: join_household is SECURITY DEFINER and trusts the caller-supplied user_id ===
+ is_security_definer |          args           
+---------------------+-------------------------
+ f                   | code text, user_id uuid
+(1 row)
+
+SET
+SET
+--- Mama calls join_household with BAUTIs brother uuid as user_id (adding someone else) ---
+psql:/tmp/claude-0/-home-user-casa-app/c86c90c5-b82e-5520-a828-4928378cd426/scratchpad/sec.sql:8: ERROR:  Already a member
+CONTEXT:  PL/pgSQL function join_household(text,uuid) line 12 at RAISE
+RESET
+--- did Mama just add a third party to a household she is not in? (already-member guard fired?) ---
+             household_id             |              profile_id              
+--------------------------------------+--------------------------------------
+ aaaaaaaa-0000-0000-0000-000000000001 | 11111111-1111-1111-1111-111111111111
+ aaaaaaaa-0000-0000-0000-000000000001 | 22222222-2222-2222-2222-222222222222
+(2 rows)
+
+
+=== S2: Mama joins household A herself using only the code ===
+SET
+SET
+ joined 
+--------
+ t
+(1 row)
+
+RESET
+             household_id             |              profile_id              
+--------------------------------------+--------------------------------------
+ aaaaaaaa-0000-0000-0000-000000000001 | 11111111-1111-1111-1111-111111111111
+ aaaaaaaa-0000-0000-0000-000000000001 | 22222222-2222-2222-2222-222222222222
+ aaaaaaaa-0000-0000-0000-000000000001 | 33333333-3333-3333-3333-333333333333
+ bbbbbbbb-0000-0000-0000-000000000002 | 33333333-3333-3333-3333-333333333333
+(4 rows)
+
+DELETE 1
+
+=== S3: task isolation — outsider selects tasks of household A ===
+SET
+SET
+ tasks_of_a_visible_to_outsider 
+--------------------------------
+                              0
+(1 row)
+
+RESET
+
+=== S4: weeks / week_scores write policies for a normal member (should be denied; cron uses service role) ===
+  tablename  |  cmd   |          policyname          
+-------------+--------+------------------------------
+ week_scores | SELECT | Members can read week scores
+ weeks       | SELECT | Members can read weeks
+(2 rows)
+
+SET
+SET
+psql:/tmp/claude-0/-home-user-casa-app/c86c90c5-b82e-5520-a828-4928378cd426/scratchpad/sec.sql:31: ERROR:  new row violates row-level security policy for table "weeks"
+RESET
+
+=== S5: households DELETE policy? (leaving / deleting a house) ===
+  cmd   |                policyname                 
+--------+-------------------------------------------
+ INSERT | Authenticated users can create households
+ SELECT | Members can read their households
+ UPDATE | Owners can update their households
+(3 rows)
+

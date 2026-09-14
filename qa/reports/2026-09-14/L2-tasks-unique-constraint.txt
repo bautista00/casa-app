@@ -1,0 +1,38 @@
+=== the constraint as shipped ===
+            conname             |               pg_get_constraintdef                
+--------------------------------+---------------------------------------------------
+ tasks_template_id_due_date_key | UNIQUE NULLS NOT DISTINCT (template_id, due_date)
+(1 row)
+
+
+=== T1: two one-off tasks, SAME household, SAME due date (the everyday case) ===
+INSERT 0 1
+psql:/tmp/claude-0/-home-user-casa-app/c86c90c5-b82e-5520-a828-4928378cd426/scratchpad/uniq.sql:10: ERROR:  duplicate key value violates unique constraint "tasks_template_id_due_date_key"
+DETAIL:  Key (template_id, due_date)=(null, 2026-09-15) already exists.
+
+=== T2: one-off task in the OTHER household, same due date (cross-household collision) ===
+psql:/tmp/claude-0/-home-user-casa-app/c86c90c5-b82e-5520-a828-4928378cd426/scratchpad/uniq.sql:15: ERROR:  duplicate key value violates unique constraint "tasks_template_id_due_date_key"
+DETAIL:  Key (template_id, due_date)=(null, 2026-09-15) already exists.
+
+=== T3: two one-off tasks with NO due date ===
+INSERT 0 1
+psql:/tmp/claude-0/-home-user-casa-app/c86c90c5-b82e-5520-a828-4928378cd426/scratchpad/uniq.sql:22: ERROR:  duplicate key value violates unique constraint "tasks_template_id_due_date_key"
+DETAIL:  Key (template_id, due_date)=(null, null) already exists.
+
+=== what actually made it in ===
+             household_id             |       title       |  due_date  | template_id 
+--------------------------------------+-------------------+------------+-------------
+ aaaaaaaa-0000-0000-0000-000000000001 | Lavar los platos  | 2026-09-15 | 
+ aaaaaaaa-0000-0000-0000-000000000001 | Tarea sin fecha 1 |            | 
+(2 rows)
+
+
+=== T4: does the intended template idempotency still work? ===
+INSERT 0 1
+INSERT 0 1
+INSERT 0 0
+ barrer_rows 
+-------------
+           1
+(1 row)
+

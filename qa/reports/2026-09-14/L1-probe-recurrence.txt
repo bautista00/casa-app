@@ -1,0 +1,94 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - ESM syntax in a file loaded as CommonJS (vitest.config.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.0 /home/user/casa-app
+
+
+daily from 2026-09-14, horizon 14 (cron uses 14)
+  n=15 -> ["2026-09-14","2026-09-15","2026-09-16","2026-09-17","2026-09-18","2026-09-19","2026-09-20","2026-09-21","2026-09-22","2026-09-23","2026-09-24","2026-09-25","2026-09-26","2026-09-27","2026-09-28"]
+  duplicates=false
+
+daily from 2026-09-15, horizon 14 (next day cron run)
+  n=15 -> ["2026-09-15","2026-09-16","2026-09-17","2026-09-18","2026-09-19","2026-09-20","2026-09-21","2026-09-22","2026-09-23","2026-09-24","2026-09-25","2026-09-26","2026-09-27","2026-09-28","2026-09-29"]
+  duplicates=false
+
+daily horizon 0
+  n=1 -> ["2026-09-14"]
+  duplicates=false
+
+day_of_month=31 from 2026-01-15, horizon 90
+  n=3 -> ["2026-01-31","2026-02-28","2026-03-31"]
+  duplicates=false
+
+day_of_month=31 from 2026-01-31, horizon 90
+  n=3 -> ["2026-01-31","2026-02-28","2026-03-31"]
+  duplicates=false
+
+day_of_month=30 from 2026-01-15, horizon 60 (Feb has 28)
+  n=2 -> ["2026-01-30","2026-02-28"]
+  duplicates=false
+
+day_of_month=29 from 2026-02-01, horizon 40 (2026 not leap)
+  n=1 -> ["2026-02-28"]
+  duplicates=false
+
+day_of_month=29 from 2024-02-01, horizon 40 (2024 IS leap)
+  n=1 -> ["2024-02-29"]
+  duplicates=false
+
+day_of_month=31 from 2026-01-15, horizon 14 (the value the cron actually passes)
+  n=0 -> []
+  duplicates=false
+
+day_of_month=1 from 2026-01-15, horizon 14
+  n=0 -> []
+  duplicates=false
+
+day_of_month=15 from 2026-01-15 (today IS the day), horizon 14
+  n=1 -> ["2026-01-15"]
+  duplicates=false
+
+day_of_month=31 spanning Jan->Feb->Mar, horizon 120 (only 3 iterations!)
+  n=3 -> ["2026-01-31","2026-02-28","2026-03-31"]
+  duplicates=false
+
+day_of_month=0 (invalid, falsy)
+  n=0 -> []
+  duplicates=false
+
+DUPLICATE CHECK: day_of_month=31, from 2026-01-31, horizon 120
+  n=3 -> ["2026-01-31","2026-02-28","2026-03-31"]
+  duplicates=false
+
+DUPLICATE CHECK: day_of_month=30, from 2026-01-30, horizon 120
+  n=3 -> ["2026-01-30","2026-02-28","2026-03-30"]
+  duplicates=false
+
+weekly [0] (Sunday) from 2026-09-14 Mon, horizon 14
+  n=2 -> ["2026-09-20","2026-09-27"]
+  duplicates=false
+
+weekly all 7 days, horizon 14
+  n=15 -> ["2026-09-14","2026-09-15","2026-09-16","2026-09-17","2026-09-18","2026-09-19","2026-09-20","2026-09-21","2026-09-22","2026-09-23","2026-09-24","2026-09-25","2026-09-26","2026-09-27","2026-09-28"]
+  duplicates=false
+
+weekly invalid day 9
+  n=0 -> []
+  duplicates=false
+
+rotation: last assignee left the household
+  members=[b,c], last=a (a left) -> b (expected: next after a; falls back to first)
+  members=[a], last=a -> a
+  members=[a,b,c], last=null -> a
+  members=[], last=null -> null
+ ✓ qa/tmp/probe-recur.test.ts > PROBE recurrence.ts > daily horizon inclusivity 4ms
+ ✓ qa/tmp/probe-recur.test.ts > PROBE recurrence.ts > monthly month-end cases 1ms
+ ✓ qa/tmp/probe-recur.test.ts > PROBE recurrence.ts > weekly edge 1ms
+ ✓ qa/tmp/probe-recur.test.ts > PROBE recurrence.ts > rotation 0ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  00:19:46
+   Duration  1.19s (import 90%, transform 8%, tests 1%, worker 1%)
+

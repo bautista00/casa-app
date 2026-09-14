@@ -1,0 +1,57 @@
+FOCUS #email  : {"tag":"INPUT","outline":"none 0px oklab(0.549991 -0.0156989 -0.179296 / 0.5)","boxShadow":"rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.549991 -0.0156989 -0.179296 / 0.5) 0px 0px 0px 3px, rgba(0, 0, 0, 0) 0px 0px 0px 0px","borderColor":"oklab(0.561296 -0.0151921 -0.17415)"}
+FOCUS submit  : {"outline":"none 0px","boxShadow":"rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0 0 0 / 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"}
+TOUCH TARGETS: [{"cls":"size-8","w":32,"h":32},{"cls":"size-9","w":36,"h":36},{"cls":"w-10 h-10 rounded-full","w":40,"h":40},{"cls":"w-11 h-11","w":44,"h":44},{"cls":"h-12 w-full","w":390,"h":48}]
+CONTRAST (AA needs 4.5 for body text, 3.0 for >=18.66px bold / 24px):
+{
+ "text-accent": {
+  "color": "lab(66.6158 39.9115 67.7677)",
+  "onCard": 1.06,
+  "onBody": 1.08
+ },
+ "text-muted-foreground": {
+  "color": "lab(37.1665 0.694901 -11.1262)",
+  "onCard": 1.41,
+  "onBody": 1.38
+ },
+ "text-primary": {
+  "color": "lab(39.9093 17.2811 -63.5527)",
+  "onCard": 1.23,
+  "onBody": 1.21
+ },
+ "text-crown": {
+  "color": "lab(79.2935 13.5666 82.2486)",
+  "onCard": 1.01,
+  "onBody": 1.01
+ },
+ "text-success": {
+  "color": "lab(61.7025 -58.3045 30.2029)",
+  "onCard": 1.2,
+  "onBody": 1.22
+ },
+ "text-destructive": {
+  "color": "lab(48.4493 77.4328 61.5452)",
+  "onCard": 1.48,
+  "onBody": 1.51
+ },
+ "text-effort-pesada": {
+  "color": "lab(57.5101 61.7604 46.5252)",
+  "onCard": 1.24,
+  "onBody": 1.26
+ },
+ "text-effort-rapida": {
+  "color": "lab(69.4676 -47.8625 24.6835)",
+  "onCard": 1.11,
+  "onBody": 1.12
+ },
+ "_bg": {
+  "card": "lab(98.8131 0.0265837 -1.89835)",
+  "body": "lab(96.4653 0.0683069 -3.78759)"
+ }
+}
+SUBMIT disabled during request: 
+body @1.2s: Casa | Organicen la casa juntos | Iniciar sesión | Email | Enviar enlace mágico | Algo salió mal. Intentá de nuevo.
+toast: "Algo salió mal. Intentá de nuevo."
+CALLBACK @1000ms: {"url":"/callback","text":"","spinner":true,"visibleEls":12}
+CALLBACK @5000ms: {"url":"/callback","text":"","spinner":true,"visibleEls":12}
+CALLBACK @15000ms: {"url":"/callback","text":"","spinner":true,"visibleEls":12}
+callback console: [info] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold | [log] [HMR] connected

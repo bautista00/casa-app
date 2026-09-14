@@ -1,0 +1,37 @@
+     proname     | security_definer | search_path_setting 
+-----------------+------------------+---------------------
+ is_member       | t                | 
+ join_household  | t                | 
+ handle_new_user | t                | 
+(3 rows)
+
+INSERT 0 1
+UPDATE 1
+
+=== Mama (member of B only) calls join_household(AAAAAA, Papa) — adds a THIRD PARTY to a household she is not in ===
+SET
+SET
+ returned_household 
+--------------------
+ "Depto Palermo"
+(1 row)
+
+RESET
+             household_id             | display_name 
+--------------------------------------+--------------
+ aaaaaaaa-0000-0000-0000-000000000001 | Bauti
+ aaaaaaaa-0000-0000-0000-000000000001 | Hernan
+ aaaaaaaa-0000-0000-0000-000000000001 | Papa
+(3 rows)
+
+
+=== and the return value leaks the full household row (join_code included) to a non-member ===
+SET
+SET
+                                                                                                                         full_row                                                                                                                          
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ {"id":"bbbbbbbb-0000-0000-0000-000000000002","name":"Casa de los viejos","join_code":"BBBBBB","week_end_day":0,"timezone":"America/Argentina/Buenos_Aires","reward_text":null,"dreaded_template_id":null,"created_at":"2026-09-14T00:21:43.995075+00:00"}
+(1 row)
+
+RESET
+DELETE 2

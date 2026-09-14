@@ -1,0 +1,57 @@
+
+--- nothing focused (fresh load) ---
+{
+ "active": "INPUT#email[email]",
+ "button": {
+  "focusVisible": false,
+  "focus": false,
+  "outline": "none/0px/oklab(0.549991 -0.0156989 -0.179296 / 0.5)",
+  "boxShadow": "none",
+  "border": "1px rgba(0, 0, 0, 0)"
+ },
+ "input": {
+  "focusVisible": true,
+  "focus": true,
+  "outline": "none/0px/oklab(0.549991 -0.0156989 -0.179296 / 0.5)",
+  "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.549991 -0.0156989 -0.179296 / 0.5) 0px 0px 0px 3px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+  "border": "1px lab(45.8544 15.1264 -63.6504)"
+ }
+}
+
+--- submit button keyboard-focused ---
+{
+ "active": "BUTTON[submit]",
+ "button": {
+  "focusVisible": true,
+  "focus": true,
+  "outline": "none/0px/oklab(0.549991 -0.0156989 -0.179296 / 0.5)",
+  "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.549991 -0.0156989 -0.179296 / 0.0163989) 0px 0px 0px 0.0983932px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+  "border": "1px oklab(0.549991 -0.0156989 -0.179296 / 0.0327977)"
+ },
+ "input": {
+  "focusVisible": false,
+  "focus": false,
+  "outline": "none/0px/oklab(0.549991 -0.0156989 -0.179296 / 0.5)",
+  "boxShadow": "none",
+  "border": "1px oklab(0.561471 -0.0151843 -0.174071)"
+ }
+}
+
+--- email input keyboard-focused ---
+{
+ "active": "INPUT#email[email]",
+ "button": {
+  "focusVisible": false,
+  "focus": false,
+  "outline": "none/0px/oklab(0.549991 -0.0156989 -0.179296 / 0.5)",
+  "boxShadow": "none",
+  "border": "1px rgba(0, 0, 0, 0)"
+ },
+ "input": {
+  "focusVisible": true,
+  "focus": true,
+  "outline": "none/0px/oklab(0.549991 -0.0156989 -0.179296 / 0.5)",
+  "boxShadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, oklab(0.549991 -0.0156989 -0.179296 / 0.5) 0px 0px 0px 3px, rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+  "border": "1px oklab(0.899998 -0.00000929832 -0.0199779)"
+ }
+}
