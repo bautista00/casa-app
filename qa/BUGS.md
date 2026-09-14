@@ -41,22 +41,22 @@ Side exits: `REOPENED` · `NEEDS-INFO` · `WONTFIX` · `CANNOT-REPRODUCE` · `DU
 | CASA-003 | Cron routes accept `Authorization: Bearer undefined` when `CRON_SECRET` is unset | S1 | P0 | SEC | backend-dev | OPEN |
 | CASA-004 | The week runs from the chosen end-day instead of to it — the whole week is shifted one day | S1 | P0 | DOM | backend-dev | OPEN |
 | CASA-005 | Any signed-in user can read every Casa user's name and phone number | S1 | P0 | SEC | backend-dev | OPEN |
-| CASA-006 | Board decides "today" in the server's timezone, so after 21:00 in Argentina it is a day ahead | S2 | P1 | BOARD | frontend-dev | ASSIGNED |
+| CASA-006 | Board decides "today" in the server's timezone, so after 21:00 in Argentina it is a day ahead | S2 | P1 | BOARD | frontend-dev | FIXED |
 | CASA-007 | "Rotar entre miembros" gives the first 15 days of a rotating task to the same person | S2 | P1 | CRON | backend-dev | OPEN |
-| CASA-008 | Any data-layer error shows the raw Next.js error page instead of a Spanish message | S2 | P1 | BOARD | frontend-dev | ASSIGNED |
+| CASA-008 | Any data-layer error shows the raw Next.js error page instead of a Spanish message | S2 | P1 | BOARD | frontend-dev | FIXED |
 | CASA-009 | A non-member with a join code can add *any other user* to a household | S2 | P1 | SEC | backend-dev | OPEN |
-| CASA-010 | Non-owner members get "¡Guardado!" but their settings changes are silently discarded | S2 | P1 | SET | frontend-dev | ASSIGNED |
-| CASA-011 | Tasks with no due date show a points badge but can never score | S2 | P1 | BOARD | frontend-dev | ASSIGNED |
-| CASA-012 | Double-tapping "hecha" un-completes the task in the UI and shows an error | S2 | P2 | BOARD | frontend-dev | ASSIGNED |
+| CASA-010 | Non-owner members get "¡Guardado!" but their settings changes are silently discarded | S2 | P1 | SET | frontend-dev | FIXED |
+| CASA-011 | Tasks with no due date show a points badge but can never score | S2 | P1 | BOARD | frontend-dev | FIXED |
+| CASA-012 | Double-tapping "hecha" un-completes the task in the UI and shows an error | S2 | P2 | BOARD | frontend-dev | FIXED |
 | CASA-013 | `npm run lint` fails — `require()` import in `src/lib/supabase/server.ts` | S3 | P1 | PERF | backend-dev | OPEN |
-| CASA-014 | `/callback` spins forever when the magic link is expired or invalid | S3 | P1 | AUTH | frontend-dev | ASSIGNED |
-| CASA-015 | Realtime task updates drop the assignee, so the name vanishes from the card | S3 | P2 | BOARD | frontend-dev | ASSIGNED |
+| CASA-014 | `/callback` spins forever when the magic link is expired or invalid | S3 | P1 | AUTH | frontend-dev | FIXED |
+| CASA-015 | Realtime task updates drop the assignee, so the name vanishes from the card | S3 | P2 | BOARD | frontend-dev | FIXED |
 | CASA-016 | 14 user-visible strings (15 sites) are hardcoded instead of living in `src/lib/i18n/es.ts` | S3 | P2 | I18N | frontend-dev | ASSIGNED |
 | CASA-017 | Tuteo instead of voseo: "Elige la cena del viernes" | S3 | P2 | I18N | frontend-dev | ASSIGNED |
 | CASA-018 | `maximum-scale=1` blocks pinch-zoom on every page | S3 | P2 | A11Y | frontend-dev | ASSIGNED |
 | CASA-019 | Icon-only buttons are 32–40 px — below the 44 px touch target on the primary device | S3 | P2 | A11Y | frontend-dev | ASSIGNED |
 | CASA-020 | Gamification colours fail WCAG AA contrast (winner's rank pill measures 1.77:1) | S3 | P2 | A11Y | frontend-dev | ASSIGNED |
-| CASA-021 | History shows an 8-day week: the exclusive end boundary is printed as the last day | S3 | P2 | HIST | frontend-dev | ASSIGNED |
+| CASA-021 | History shows an 8-day week: the exclusive end boundary is printed as the last day | S3 | P2 | HIST | frontend-dev | FIXED |
 | CASA-022 | A weekly recurring task saved with no weekday is accepted and never generates anything | S3 | P2 | TASK | frontend-dev | ASSIGNED |
 | CASA-023 | A member can add a phone number but can never remove it | S3 | P2 | SET | frontend-dev | ASSIGNED |
 | CASA-024 | `/manifest.json` is declared in metadata but does not exist | S3 | P3 | PERF | frontend-dev | ASSIGNED |
@@ -361,7 +361,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | HIST |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-HIST-002 |
 
@@ -427,8 +427,11 @@ CASA-004, or the expected output moves under you.
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the "better alternative": the card now calls `formatWeekRange` instead of re-deriving the range, so there is one definition of how a week reads and this cannot drift again. Fixed against the **current** stored convention, `week_end` exclusive, as instructed — verified with a throwaway unit test that a week stored `2026-09-13`/`2026-09-20` renders "13 Sep – 19 Sep": 7 days, and the next card starts on 20 Sep so consecutive cards no longer share a date. Ordering caveat stands: CASA-004 changes which dates get stored, not how they are displayed, so this fix holds either way — but re-read the expected strings after CASA-004 lands. Live verification is blocked on CASA-001 (no signed-in page renders and there is no Supabase project to point at), so this was verified by reasoning plus `npm run lint` / `npx tsc --noEmit` / `npm run build` / `npm test` — no screenshot taken.
+
+**Fix applied**
+`src/app/(app)/casa/[id]/historial/page.tsx` — the week card renders `formatWeekRange(...)` (which subtracts the exclusive end day) instead of printing `week_end` verbatim.
 
 ---
 
@@ -899,7 +902,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-BOARD-005 |
 
@@ -972,8 +975,11 @@ and the DELETE branch.
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Went past the suggested merge, because preserving `t.assignee` wholesale is wrong when the update *is* a re-assignment — the card would keep showing the previous person. The new `withJoins` helper resolves the profile from the `members` prop by `assignee_id` (and `completed_by`), and only falls back to what the card already had when the id is unchanged and the profile is not in the list. That covers the INSERT gap the entry mentions at `:161` as well, so a generated task shows its assignee without a reload; INSERT is also now idempotent against a duplicate id. This is what finally uses the `members` prop that lint flagged as unused. Live verification is blocked on CASA-001 (no signed-in page renders and there is no Supabase project to point at), so this was verified by reasoning plus `npm run lint` / `npx tsc --noEmit` / `npm run build` / `npm test` — no screenshot taken.
+
+**Fix applied**
+`src/components/board-view.tsx` — realtime INSERT/UPDATE payloads are merged through a `withJoins` helper that re-attaches `assignee`/`completed_by_profile` from the members list instead of replacing the task wholesale.
 
 ---
 
@@ -985,7 +991,7 @@ n/a
 | **Priority** | P1 |
 | **Area** | AUTH |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-AUTH-006 |
 
@@ -1080,8 +1086,11 @@ caught by the new timeout.
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Verified live, signed-out — this was the one bug in the batch that did not need CASA-001. With `.env.local` stubbed and `npm run dev` running, `GET /callback` returns 200 and the rendered HTML now contains "Estamos verificando tu enlace...", so the page has words on it from the first frame instead of the wordless spinner in the original report; `/callback?error=access_denied&...` also returns 200 and fails fast. I could not drive the 8 s timeout or take a screenshot: this session has no browser tool, only HTTP. `.env.local` has been deleted. One change from the suggested diff: the `error`-in-URL case does not call `setFailed` synchronously in the effect — Next 16's `react-hooks/set-state-in-effect` rule rejects that as a lint error — so it schedules the same failure with a 0 ms timer instead, which also keeps a single code path for "give up". The query string is checked as well as the hash, since PKCE reports failures there.
+
+**Fix applied**
+`src/app/(auth)/callback/page.tsx` + `src/lib/i18n/es.ts` (`auth.verifying`, `auth.linkExpired`, `auth.linkExpiredHelp`, `auth.backToLogin`) — the callback now shows Spanish progress copy, gives up after 8 s (immediately on an `error` param), offers a 48 px link back to `/login`, and unsubscribes the auth listener on unmount.
 
 ---
 
@@ -1187,7 +1196,7 @@ The 118 remaining warnings are noise, most of them from `.claude/skills/**` vend
 | **Priority** | P2 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-BOARD-004 |
 
@@ -1287,8 +1296,11 @@ the realtime reconciliation (CASA-015).
 The idempotent-`completeTask` variant is `backend-dev`'s (`src/lib/data/tasks.ts`). If they take it,
 record the signature change in `CONTRACT.md`. The client-side guard alone closes this bug.
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Implemented the client guard, plus the "already done" handling the acceptance criteria ask for. The lock is a `useRef<Set<string>>` rather than state: two taps in the same tick would both read a stale `busy` from the render closure, so state alone does not actually serialise a fast double-tap. The state copy exists only to drive `disabled` on the button. For the case the client guard cannot cover — two members tapping at once — `PGRST116` (PostgREST's "zero rows" under `.single()`) is now read as "already done": the card stays done and the toast is `es.board.alreadyDone`, not `es.errors.generic`. Any other error still reverts, and the revert now restores the previous task object rather than hand-patching fields, so the joined assignee survives it. `handleReopen` got the same guard and a revert it previously lacked. Left `completeTask` alone — making it idempotent with `.maybeSingle()` is `backend-dev`'s and is not needed for this bug. Live verification is blocked on CASA-001 (no signed-in page renders and there is no Supabase project to point at), so this was verified by reasoning plus `npm run lint` / `npx tsc --noEmit` / `npm run build` / `npm test` — no screenshot taken.
+
+**Fix applied**
+`src/components/board-view.tsx` + `src/lib/i18n/es.ts` (`board.alreadyDone`) — in-flight lock on complete/reopen with the button disabled while a request is open, and `PGRST116` treated as "ya estaba hecha" instead of a failure.
 
 ---
 
@@ -1300,7 +1312,7 @@ record the signature change in `CONTRACT.md`. The client-side guard alone closes
 | **Priority** | P1 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-LEAD-004 |
 
@@ -1382,8 +1394,11 @@ If the "score by `completed_at`" route is chosen, `backend-dev` owns
 `src/app/api/cron/week-close/route.ts` and must land the matching change in the same cycle, recorded
 in `CONTRACT.md`. Two scorers that disagree is the actual defect here.
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the "make the date required" route, not the "score by `completed_at`" one. Reason: the alternative needs a matching change in `src/app/api/cron/week-close/route.ts`, which is `backend-dev`'s, and shipping only the client half would leave exactly the defect this entry names — two scorers that disagree. Requiring the date keeps one definition of a scoring task and also removes the last way to reach the `(NULL, NULL)` state behind CASA-002. The create form is the only producer of dateless one-off tasks (the generator always derives a date from `nextOccurrences`), so the state is now unreachable. Note for re-test: *pre-existing* dateless rows are untouched — they still render under "Esta semana" with a points badge and still will not score. If any exist in the QA fixtures, that is data to clean up rather than a live code path, but flag it if you disagree. Live verification is blocked on CASA-001 (no signed-in page renders and there is no Supabase project to point at), so this was verified by reasoning plus `npm run lint` / `npx tsc --noEmit` / `npm run build` / `npm test` — no screenshot taken.
+
+**Fix applied**
+`src/app/(app)/casa/[id]/nueva/page.tsx` — a one-off task now requires a due date: the input is `required`, "Guardar" is disabled while it is empty, and `es.task.dueDateRequired` explains why.
 
 ---
 
@@ -1395,7 +1410,7 @@ in `CONTRACT.md`. Two scorers that disagree is the actual defect here.
 | **Priority** | P1 |
 | **Area** | SET |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static + local Postgres RLS harness · viewport 390×844 |
 | **Test case** | TC-SET-002 |
 
@@ -1484,8 +1499,11 @@ is empty:
 The `updateHousehold` hardening is `backend-dev`'s (`src/lib/data/households.ts`). If they take it,
 record the new throwing behaviour in `CONTRACT.md` so the frontend can catch `NOT_AUTHORIZED`.
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the frontend half only, which is enough to close the bug: `isOwner` is derived from the members list, the four owner-only controls are `disabled` for everyone else with `es.settings.ownerOnly` under them, and `updateHousehold` is no longer called at all unless the user is the owner — so a member can never be told "¡Guardado!" for a household write that was discarded. Teléfono stays editable for everyone (own profile row, RLS allows it) and still toasts on success. Residual gap worth `backend-dev`'s attention, already recorded in this entry's cross-boundary note: the UI trusts a members list read at page load, so a role revoked while the page is open would still produce a silent no-op. The suggested `updateHousehold` hardening (throw `NOT_AUTHORIZED` when zero rows come back) is the only thing that closes that, and the frontend is ready to catch it. Not filed as a separate handoff since the entry already carries it. Live verification is blocked on CASA-001 (no signed-in page renders and there is no Supabase project to point at), so this was verified by reasoning plus `npm run lint` / `npx tsc --noEmit` / `npm run build` / `npm test` — no screenshot taken.
+
+**Fix applied**
+`src/app/(app)/casa/[id]/ajustes/page.tsx` + `src/lib/i18n/es.ts` (`settings.ownerOnly`) — name / week-end day / weekly prize / dreaded task are disabled for non-owners with a Spanish explanation, and `updateHousehold` is skipped unless the user owns the household.
 
 ---
 
@@ -1630,7 +1648,7 @@ the same change.
 | **Priority** | P1 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-BOARD-006 |
 
@@ -1712,8 +1730,11 @@ error is still `console.error`-ed so QA can see it in the dev log.
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Two deviations from the suggested diff, both deliberate. (1) Next 16 names the prop `retry`, not `reset` — `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/error.md` records "v16.3.0 `retry` prop became stable" and says to prefer it over `reset`, so the boundaries take `{ error, retry }`. (2) The same doc notes `error.tsx` does **not** wrap the `layout.tsx` of its own segment, so `(app)/error.tsx` alone would never catch the `(app)/layout.tsx:19-20` failures this entry cites — that is why there is also a root `src/app/error.tsx`. The root boundary covers the `(auth)` subtree too (its layout is a passthrough fragment), so no separate `(auth)/error.tsx` was added. Only `error.digest` reaches the DOM, never `error.message`; the full error is `console.error`-ed so it stays visible in the dev log. `global-error.tsx` ships its own `<html>`/`<body>` and inline styles because it replaces the root layout and does not get `globals.css`. Live verification is blocked on CASA-001 (no signed-in page renders and there is no Supabase project to point at), so this was verified by reasoning plus `npm run lint` / `npx tsc --noEmit` / `npm run build` / `npm test` — no screenshot taken.
+
+**Fix applied**
+New `src/app/error.tsx`, `src/app/(app)/error.tsx`, `src/app/global-error.tsx` and `src/components/error-state.tsx`, plus `errors.title`/`description`/`retry`/`goHome` in `src/lib/i18n/es.ts` — a Spanish error card with "Reintentar" at segment, route-group-layout and root-layout level.
 
 ---
 
@@ -1838,7 +1859,7 @@ n/a
 | **Priority** | P1 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static + L1 probe · viewport 390×844 |
 | **Test case** | TC-BOARD-003 |
 
@@ -1915,8 +1936,11 @@ should stay consistent with the board.
 If the `todayInTimezone` helper route is taken, `backend-dev` adds it to `src/lib/domain/week.ts` and
 records it in `CONTRACT.md`; the page change stays with `frontend-dev`.
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the in-page fix rather than asking `backend-dev` for a `todayInTimezone` helper, so `CONTRACT.md` is unchanged. Confirmed the conversion at the domain level with a throwaway probe: at `2026-09-17T00:30:00Z` (21:30 ART) server-local reads `2026-09-17` and household-local reads `2026-09-16`, so a task due that day now lands in "Hoy" and one due the next day does not. `weekStart`/`weekEnd` on the same page already came from `getWeekWindow`, which does the same conversion, so the two halves of the screen now agree. Live verification is blocked on CASA-001 (no signed-in page renders and there is no Supabase project to point at), so this was verified by reasoning plus `npm run lint` / `npx tsc --noEmit` / `npm run build` / `npm test` — no screenshot taken.
+
+**Fix applied**
+`src/app/(app)/casa/[id]/page.tsx` — "today" is now `format(toZonedTime(now, household.timezone), 'yyyy-MM-dd')`, so the board groups by the household's local day instead of the server's.
 
 ---
 

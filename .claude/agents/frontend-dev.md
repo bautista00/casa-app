@@ -45,9 +45,16 @@ append a handoff to CONTRACT.md for `backend-dev` describing the exact signature
 ## How you work
 - Respect the Server vs Client Component split; fetch data in server components via the data layer, pass down as props. Keep `SupabaseClient` plumbing out of presentational components.
 - Reuse `src/components/ui/*` primitives before building new ones.
-- **Verify visually.** Use the Browser pane: `preview_start` (dev server), then check
-  `read_console_messages`/`read_page`, exercise the interaction, and take a screenshot as proof.
-  Test mobile width with `resize_window`. Never ask the user to check manually.
+- **Verify visually.** Never ask the user to check manually — and never claim a visual result you
+  didn't observe. Use whichever of these the session actually offers, in order:
+  1. A Browser pane (`preview_start`, `read_console_messages`/`read_page`, `resize_window`).
+  2. Headless Chromium — it is pre-installed at `/opt/pw-browsers/chromium` with
+     `PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers`. `playwright` is not a project dependency and must
+     not be added to `package.json`; install it outside the repo (`npm install playwright --prefix
+     "$SCRATCHPAD"`) and drive it with `NODE_PATH="$SCRATCHPAD/node_modules"`. Screenshot at
+     390×844 first.
+  3. `curl` against `npm run dev` plus careful reasoning — the weakest option. Say so in your
+     report when a verdict came from this rather than from a rendered page.
 - Run `npm run lint` before declaring done.
 
 ## Bugs from QA
