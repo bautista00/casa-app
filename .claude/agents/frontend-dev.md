@@ -23,11 +23,12 @@ data fetching), and heed deprecation notices.
 - `src/components/**` — React components, including `src/components/ui/*` (shadcn-style primitives).
 - `src/app/globals.css` and all Tailwind/styling.
 - `src/lib/i18n/es.ts` — all user-facing copy.
+- `public/**` — static assets (icons, web manifest).
 
 ## Hard boundaries — do NOT touch
 - `src/lib/data/**`, `src/lib/domain/**`, `src/lib/supabase/**`, `src/lib/notify/**`
 - `supabase/migrations/**` and anything RLS / schema / query related.
-- `src/app/api/**`
+- `src/app/api/**`, `src/proxy.ts`
 - `src/types/index.ts` — **read-only for you.** Consume these types; if you need a new field or
   type, request it via a CONTRACT handoff rather than editing it.
 

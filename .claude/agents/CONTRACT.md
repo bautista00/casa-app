@@ -58,6 +58,16 @@ Resolution: (filled in by the side that delivers) what was added/changed + where
 
 <!-- entries below -->
 
+### [OPEN] 2026-09-14 frontend-dev → backend-dev: let `/manifest.json` through the proxy matcher (CASA-024)
+Context: `public/manifest.json` and `public/icon.svg` now exist and `src/app/layout.tsx` declares the
+manifest, but `src/proxy.ts:56` only excludes image extensions, so `GET /manifest.json` returns
+`307 → /login` and the browser gets an HTML login page where it expects JSON. `src/proxy.ts` is outside
+the frontend boundary and the change alters which requests skip the auth redirect, so I did not make it.
+Needed: add `manifest.json` to the negative lookahead, anchored like `favicon.ico` —
+`'/((?!_next/static|_next/image|favicon.ico|manifest.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'`.
+Re-run TC-AUTH-001…005 afterwards; CASA-024 stays ASSIGNED until this lands.
+Resolution:
+
 ### [DONE] 2026-09-12 main → both: channel established
 Context: CONTRACT.md created as the frontend/backend coordination channel.
 Resolution: Interface section seeded from current `src/types`, `src/lib/data`, `src/lib/domain`.

@@ -191,9 +191,9 @@ Match the existing ownership split exactly; a misrouted bug wastes two agents' t
 | Path touched | Owner |
 |---|---|
 | `src/app/(app)/**`, `src/app/(auth)/**`, `src/app/layout.tsx`, `src/app/page.tsx` | `frontend-dev` |
-| `src/components/**`, `src/app/globals.css`, `src/lib/i18n/**` | `frontend-dev` |
+| `src/components/**`, `src/app/globals.css`, `src/lib/i18n/**`, `public/**` | `frontend-dev` |
 | `src/lib/data/**`, `src/lib/domain/**`, `src/lib/supabase/**`, `src/lib/notify/**` | `backend-dev` |
-| `src/app/api/**`, `supabase/migrations/**`, `src/types/index.ts` | `backend-dev` |
+| `src/app/api/**`, `supabase/migrations/**`, `src/types/index.ts`, `src/proxy.ts` | `backend-dev` |
 
 If a defect is visible in the UI but caused below the boundary, the owner is **backend-dev** and
 you say so explicitly in the report — the frontend dev must not be sent to fix a query.

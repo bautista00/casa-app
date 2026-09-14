@@ -59,7 +59,7 @@ Side exits: `REOPENED` · `NEEDS-INFO` · `WONTFIX` · `CANNOT-REPRODUCE` · `DU
 | CASA-021 | History shows an 8-day week: the exclusive end boundary is printed as the last day | S3 | P2 | HIST | frontend-dev | FIXED |
 | CASA-022 | A weekly recurring task saved with no weekday is accepted and never generates anything | S3 | P2 | TASK | frontend-dev | FIXED |
 | CASA-023 | A member can add a phone number but can never remove it | S3 | P2 | SET | frontend-dev | FIXED |
-| CASA-024 | `/manifest.json` is declared in metadata but does not exist | S3 | P3 | PERF | frontend-dev | ASSIGNED |
+| CASA-024 | `/manifest.json` is declared in metadata but does not exist | S3 | P3 | PERF | backend-dev | OPEN |
 
 ## Fix order
 
@@ -89,7 +89,12 @@ _Set by QA at the end of each cycle. Work top-down._
 16. **CASA-021** — print `week_end - 1 day` in history.
 17. **CASA-018**, **CASA-019**, **CASA-020** — a11y batch (zoom, touch targets, contrast).
 18. **CASA-016**, **CASA-017** — i18n batch.
-19. **CASA-022**, **CASA-023**, **CASA-024** — validation and polish.
+19. **CASA-022**, **CASA-023** — validation and polish.
+
+**Rerouted 2026-09-14 by the coordinator:** **CASA-024** moves to `backend-dev`. The manifest and its
+icon now exist, but the last step is the proxy matcher at `src/proxy.ts:56`, which is auth plumbing and
+outside the frontend boundary — the one-line diff is in the entry and as an OPEN handoff in
+`CONTRACT.md`. Work it with the backend queue, after CASA-013.
 
 ---
 
@@ -104,8 +109,8 @@ _Set by QA at the end of each cycle. Work top-down._
 | **Severity** | S3 (minor) |
 | **Priority** | P3 |
 | **Area** | PERF |
-| **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Owner** | backend-dev |
+| **Status** | OPEN |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-PERF-002 |
 
@@ -187,8 +192,50 @@ too-wide exclusion would let a real route skip the auth redirect.
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+**Status stays `ASSIGNED` — this is a partial fix, and the remaining hop is outside my boundary.**
+
+Took the preferred option: the manifest now exists, with a real icon so "Agregar a pantalla de inicio"
+gets a name, a colour *and* an image rather than a blank square (`public/manifest.json` is Casa-branded,
+`lang: "es-AR"`, `display: "standalone"`, `theme_color` matching the `themeColor` in `layout.tsx`, and
+`public/icon.svg` is a claymorphism-style indigo/orange house). The `manifest` key in `metadata` is
+deliberately kept — deleting it, the entry's alternative, would be the wrong trade for a phone-first
+product once the file actually exists.
+
+What I could **not** do is the second half of the suggested diff, the `src/proxy.ts` matcher exclusion.
+`src/proxy.ts` is not in the frontend agent's file boundary, and this specific change alters which
+requests skip the auth redirect — exactly the kind of edit the boundary exists to gate (the entry's own
+regression note says a too-wide exclusion would let a real route skip the redirect). So acceptance
+criterion 1 is **not** met yet: `GET /manifest.json` still returns `307 → /login`.
+
+Measured just now with the manifest in place:
+```
+manifest link in HTML:   <link rel="manifest" href="/manifest.json"/>
+GET /manifest.json:      HTTP 307 -> /login          <-- still blocked by the proxy matcher
+GET /icon.svg:           HTTP 200  image/svg+xml     <-- public/ serving works; .svg is already excluded
+```
+The `icon.svg` line is the proof that the only thing left is the matcher: an identical `public/` file whose
+extension the matcher already excludes is served correctly, while the `.json` one is redirected.
+
+The one-line change still needed, for whoever owns `src/proxy.ts` (also logged as an OPEN handoff in
+`.claude/agents/CONTRACT.md`):
+```diff
+-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
++    '/((?!_next/static|_next/image|favicon.ico|manifest.json|icon.svg|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+```
+(`icon.svg` is already covered by the `.svg` branch; naming it is optional.) The exclusion is anchored
+immediately after the leading `/`, the same way `favicon.ico` is, so it matches only those exact
+top-level paths and no real route loses its redirect — but TC-AUTH-001…005 should still be re-run, per
+the entry's regression note.
+
+Worth noting for QA: browsers fetch a manifest without credentials by default, so this would 307 even for
+a signed-in member. The matcher change is required, not cosmetic.
+
+**Fix applied**
+Partial. `public/manifest.json` (new) + `public/icon.svg` (new) — a valid, Casa-branded web-app
+manifest with `name`, `start_url`, `theme_color` and an icon now exists and `src/app/layout.tsx` keeps
+pointing at it. **Still open:** the `src/proxy.ts:56` matcher exclusion, outside the frontend boundary,
+without which `GET /manifest.json` remains `307 → /login`.
 
 ---
 
@@ -200,7 +247,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | SET |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport n/a |
 | **Test case** | TC-SET-004 |
 
@@ -262,8 +309,22 @@ members without one (`src/app/api/cron/reminders/route.ts:62`).
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the suggested fix as written — it is the right one: `updatePhone` is already typed
+`phone: string | null`, so clearing the field just had to reach it. Also pointed the field at its help
+text with `aria-describedby`, which was the one thing tying the input to the "por WhatsApp" explanation.
+
+Note the toast was never the bug — it said "¡Guardado!" truthfully for the household fields; it was the
+phone write that was skipped. With the guard gone the call always runs, so a failure now surfaces as
+`es.errors.generic` instead of a false success.
+
+Not driveable end to end here (`/ajustes` is behind auth, blocked by CASA-001, and there is no Supabase
+project to assert `phone_e164 IS NULL` against), so this is verified by code path plus the gates.
+
+**Fix applied**
+`src/app/(app)/casa/[id]/ajustes/page.tsx` — `handleSave` now always calls
+`updatePhone(supabase, userId, phone.trim() || null)`, so an emptied field writes `NULL` instead of
+being skipped.
 
 ---
 
@@ -275,7 +336,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | TASK |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static + L1 probe · viewport 390×844 |
 | **Test case** | TC-TASK-006 |
 
@@ -348,8 +409,29 @@ unaffected.
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Implemented the suggested guard, with the monthly half tightened. The suggestion tests
+`dayOfMonth < 1 || dayOfMonth > 31`, which passes when the field is cleared, because
+`parseInt('') || 1` in the old `onChange` silently rewrote an empty field to `1` — so "no day" became
+"the 1st" without the member noticing. The handler now keeps the real `NaN` and the guard is
+`!Number.isInteger(dayOfMonth) || dayOfMonth < 1 || dayOfMonth > 31`; the input renders `''` rather
+than the string "NaN". Same idea as the weekly case: an unsatisfiable schedule should say so, not
+guess.
+
+Both hints come from `es.ts` in voseo per CASA-016/017, and are wired with `aria-describedby`
+(`role="group"` on the Lun–Dom grid, since the hint describes the whole grid rather than one button),
+matching the `dueDateRequired` pattern CASA-011 already established on this page.
+
+The non-recurring path is untouched — `recurrenceInvalid` is `false` whenever `isRecurring` is false,
+so TC-TASK-001 sees exactly the previous behaviour. Not driveable end to end here: `/nueva` is behind
+auth and blocked by CASA-001, so this is verified by reading the state machine plus
+`tsc --noEmit` / `build` / `npm test`, not by a live save.
+
+**Fix applied**
+`src/app/(app)/casa/[id]/nueva/page.tsx` (+ `task.pickAtLeastOneDay`, `task.dayOfMonthRange` in
+`src/lib/i18n/es.ts`) — "Guardar" is disabled and a Spanish hint appears while a weekly template has no
+weekday selected or a monthly one has a day outside 1–31; the day-of-month field no longer coerces an
+empty value to 1.
 
 ---
 
@@ -820,7 +902,7 @@ Evidence: `qa/reports/2026-09-14/CASA-fix-a11y-measurements.txt`, screenshot `qa
 | **Priority** | P2 |
 | **Area** | I18N |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport n/a |
 | **Test case** | TC-I18N-002 |
 
@@ -880,8 +962,16 @@ None — a single string constant with one consumer
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the suggested fix verbatim. Also widened the check while I was in the file: ran the acceptance
+grep over `src/**/*.tsx` as well as `es.ts`, and extended the word list with `Elimina|Guarda|Envía` —
+no other tuteo imperative anywhere in the source. Every new key added for CASA-016 is voseo
+("Elegí al menos un día", "Elegí un día del mes entre 1 y 31").
+
+**Fix applied**
+`src/lib/i18n/es.ts` — `settings.weeklyPrizePlaceholder` is now `'Ej: Elegí la cena del viernes'`.
+`grep -nE "\b(Elige|Escribe|Agrega|Completa|Crea|Selecciona|Ingresa)\b" src/lib/i18n/es.ts src/app src/components`
+returns no hits.
 
 ---
 
@@ -893,7 +983,7 @@ n/a
 | **Priority** | P2 |
 | **Area** | I18N |
 | **Owner** | frontend-dev |
-| **Status** | ASSIGNED |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport n/a |
 | **Test case** | TC-I18N-001 |
 
@@ -992,8 +1082,37 @@ Touches five files and every screen's copy — re-run the full route sweep and r
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+All 15 sites moved. Went with the `common` group from the suggested diff rather than the
+`es.settings.none` in the inventory table — "Ninguna", "Volver" and "Continuar" are not settings copy and
+"Volver" already had two consumers, so a shared group is the thing that stops the next one being pasted
+inline.
+
+Took the note about `leaderboard.tsx:75` seriously: the crown is now `role="img"` with an `aria-label`
+(plus the `title`, which still helps a mouse user), so it is actually announced on a phone instead of
+being a hover-only affordance. While there I gave two other icon-only controls real names — the bottom-nav
+"+" link (`es.nav.newTask`) and the ajustes copy-code button (`es.settings.copyCode`, which the entry
+notes was already sitting unused in `es.ts`). That needed one genuinely new string, `es.board.markOpen`
+("Marcar como pendiente"), for the board button's undo state, since `markDone` would have been wrong on it.
+
+Rendered copy is byte-identical to before except the CASA-017 placeholder, as required.
+
+Verification: both greps from "Steps to reproduce" return **no hits** outside `src/components/ui/**`.
+Visual pass was possible on `/login` only (screenshot below); `/onboarding`, `/nueva` and `/ajustes` are
+behind auth and blocked by CASA-001, so for those I have the build, `tsc --noEmit` and the greps rather
+than a screenshot — nothing renders `undefined` because every key is a literal on the typed `es` object
+and a missing one would be a type error.
+
+**Fix applied**
+`src/lib/i18n/es.ts` (new `common` group; `auth.email`, `auth.namePlaceholder`,
+`onboarding.createHouseDesc`, `onboarding.joinHouseDesc`, `task.created`, `task.recurringCreated`,
+`settings.general`, `settings.noTemplatesYet`, `settings.roleOwner`, `settings.roleMember`,
+`settings.phoneHelp`, `leaderboard.lastWinnerTitle`, `board.markOpen`),
+`src/app/(auth)/login/page.tsx`, `src/app/(app)/onboarding/page.tsx`,
+`src/app/(app)/casa/[id]/nueva/page.tsx`, `src/app/(app)/casa/[id]/ajustes/page.tsx`,
+`src/components/leaderboard.tsx`, `src/components/app-shell.tsx`, `src/components/board-view.tsx` —
+all 15 hardcoded sites now resolve through `es.*`, and the leaderboard crown carries an `aria-label`
+instead of a touch-invisible `title`.
 
 ---
 

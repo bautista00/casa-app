@@ -22,6 +22,7 @@ Read `AGENTS.md` first — this is **Next.js 16 with breaking changes**, so cons
 - `src/lib/data/*` — data-access functions. **Every function takes `SupabaseClient` as its first arg** (portable to a future Expo/React Native app — never import a singleton client here).
 - `src/lib/domain/*` — pure, framework-free TypeScript: scoring, standings, week windows, recurrence, rotation. No Next.js, no Supabase imports. This is the most valuable layer — keep it pure and tested.
 - `src/lib/supabase/*` — client/server setup.
+- `src/proxy.ts` — the auth proxy: session refresh and the redirect matcher.
 - `src/lib/notify/*` — WhatsApp notifications.
 - `src/app/api/cron/*` — scheduled work (week resets, recurring task generation).
 - `src/types/index.ts` — shared domain types (shared with frontend; coordinate via CONTRACT).
