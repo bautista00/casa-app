@@ -1,0 +1,75 @@
+== CASA-018 viewport ==
+viewportMeta: "width=device-width, initial-scale=1"
+has maximum-scale: false | has user-scalable=no: false
+input font sizes (iOS auto-zoom guard): [{"id":"email","fontSize":"16px"}]
+
+== CASA-019 touch targets @390x844 (min 44x44) ==
+   32px tall   32px wide  FAIL  ui/button size="icon" (unchanged shadcn scale)
+   44px tall   44px wide  PASS  board complete/undo button  board-view.tsx
+   44px tall   44px wide  PASS  back arrow  nueva + ajustes
+   44px tall   44px wide  PASS  copy-code button  ajustes
+   44px tall   20px wide  PASS  day-of-week cell  nueva/ajustes/onboarding
+   44px tall   51px wide  PASS  assignee / recurrence pill  nueva
+   44px tall   49px wide  PASS  dreaded-task pill  ajustes
+   52px tall   55px wide  PASS  effort card  nueva
+   44px tall   43px wide  PASS  header ghost button  app-shell
+   44px tall   51px wide  PASS  bottom-nav link  app-shell
+   44px tall   44px wide  PASS  onboarding emoji picker (was already OK)
+   48px tall  390px wide  PASS  primary CTA (was already OK)
+Casa call sites below 44px: 0
+
+== CASA-020 contrast @ sRGB canvas readback, light theme ==
+  ratio  need  fg rgb            bg rgb            pair
+    5.7     3  PASS  [94,58,0]         [246,185,0]       rank pill: crown-foreground ON bg-crown
+   5.42   4.5  PASS  [132,99,5]        [250,252,255]     trophy count: crown-ink on card
+   5.49   4.5  PASS  [161,82,0]        [250,252,255]     streak: accent-ink on card
+   5.43   4.5  PASS  [0,120,64]        [250,252,255]     success-ink on card
+   5.01   4.5  PASS  [0,112,65]        [224,231,253]     1 pt badge: effort-rapida-ink on secondary
+   5.04   4.5  PASS  [50,90,194]       [224,231,253]     3 pts badge: effort-normal-ink on secondary
+   5.04   4.5  PASS  [192,24,10]       [224,231,253]     5 pts badge: effort-pesada-ink on secondary
+   5.17   4.5  PASS  [161,82,0]        [250,245,229]     winner row: accent-ink on bg-crown/10 over card
+   6.53   4.5  PASS  [81,88,105]       [250,245,229]     winner row: muted-foreground on bg-crown/10
+   5.18   4.5  PASS  [0,112,65]        [229,235,249]     effort icon: rapida-ink on bg-primary/10
+   4.55   4.5  PASS  [161,82,0]        [249,227,210]     join-house icon: accent-ink on bg-accent/20
+   5.15   4.5  PASS  [0,120,64]        [237,248,247]     done card: success-ink on bg-success/5
+    6.1   4.5  PASS  [47,88,200]       [250,252,255]     (regression) text-primary on card
+   4.64   4.5  PASS  [231,0,11]        [250,252,255]     (regression) text-destructive on card
+   1.77     3  FAIL  [255,255,255]     [246,185,0]       (before) white on bg-crown
+   1.72   4.5  FAIL  [246,185,0]       [250,252,255]     (before) text-crown on card
+   2.55   4.5  FAIL  [243,130,29]      [250,252,255]     (before) text-accent on card
+   2.87   4.5  FAIL  [0,173,91]        [250,252,255]     (before) text-success on card
+   1.88   4.5  FAIL  [67,192,122]      [224,231,253]     (before) text-effort-rapida on secondary
+   2.87   4.5  FAIL  [240,80,61]       [224,231,253]     (before) text-effort-pesada on secondary
+failing pairs still in use: 0 
+
+== console on /login ==
+info: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+log: [HMR] connected
+
+== CASA-020 contrast, DARK theme (.dark scope) ==
+    5.7  need 3  PASS  [94,58,0]        on [246,185,0]      rank pill: crown-foreground ON bg-crown
+   5.44  need 4.5  PASS  [181,137,19]     on [19,25,45]       trophy count: crown-ink on dark card
+   5.41  need 4.5  PASS  [222,114,0]      on [19,25,45]       streak: accent-ink on dark card
+   5.45  need 4.5  PASS  [10,165,95]      on [19,25,45]       success-ink on dark card
+   5.04  need 4.5  PASS  [21,173,110]     on [33,40,61]       1 pt badge: effort-rapida-ink on secondary
+   4.59  need 4.5  PASS  [94,140,249]     on [33,40,61]       3 pts badge: effort-normal-ink on secondary
+   4.53  need 4.5  PASS  [249,88,69]      on [33,40,61]       5 pts badge: effort-pesada-ink on secondary
+    4.5  need 4.5  PASS  [222,114,0]      on [42,41,40]       winner row: accent-ink on bg-crown/10
+   5.39  need 4.5  PASS  [136,143,162]    on [19,25,45]       muted-foreground on dark card
+dark failing: 0
+screenshot: CASA-fix-leaderboard-390-light.png
+screenshot: CASA-fix-leaderboard-390-dark.png
+
+== CASA-020 contrast, DARK theme (.dark scope) ==
+    5.7  need 3  PASS  [94,58,0]        on [246,185,0]      rank pill: crown-foreground ON bg-crown
+   5.44  need 4.5  PASS  [181,137,19]     on [19,25,45]       trophy count: crown-ink on dark card
+   5.98  need 4.5  PASS  [228,124,32]     on [19,25,45]       streak: accent-ink on dark card
+   5.45  need 4.5  PASS  [10,165,95]      on [19,25,45]       success-ink on dark card
+   5.04  need 4.5  PASS  [21,173,110]     on [33,40,61]       1 pt badge: effort-rapida-ink on secondary
+   5.09  need 4.5  PASS  [105,149,252]    on [33,40,61]       3 pts badge: effort-normal-ink on secondary
+   5.04  need 4.5  PASS  [254,102,82]     on [33,40,61]       5 pts badge: effort-pesada-ink on secondary
+   4.98  need 4.5  PASS  [228,124,32]     on [42,41,40]       winner row: accent-ink on bg-crown/10
+   5.39  need 4.5  PASS  [136,143,162]    on [19,25,45]       muted-foreground on dark card
+dark failing: 0
+screenshot: CASA-fix-leaderboard-390-light.png
+screenshot: CASA-fix-leaderboard-390-dark.png

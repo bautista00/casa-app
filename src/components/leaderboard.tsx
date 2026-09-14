@@ -55,7 +55,7 @@ export function Leaderboard({
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
                   i === 0
-                    ? 'bg-crown text-white'
+                    ? 'bg-crown text-crown-foreground'
                     : i === 1
                       ? 'bg-secondary text-secondary-foreground'
                       : 'bg-muted text-muted-foreground'
@@ -72,7 +72,12 @@ export function Leaderboard({
                     {member.display_name}
                   </span>
                   {isCrowned && (
-                    <span className="text-lg" title="Ganador de la semana pasada">
+                    <span
+                      role="img"
+                      aria-label={es.leaderboard.lastWinnerTitle}
+                      title={es.leaderboard.lastWinnerTitle}
+                      className="text-lg"
+                    >
                       👑
                     </span>
                   )}
@@ -86,7 +91,7 @@ export function Leaderboard({
                       </span>
                     )}
                     {stats.streak > 1 && (
-                      <span className="text-xs text-accent flex items-center gap-0.5">
+                      <span className="text-xs text-accent-ink flex items-center gap-0.5">
                         <Flame className="w-3 h-3" />
                         {stats.streak} {es.leaderboard.streak}
                       </span>

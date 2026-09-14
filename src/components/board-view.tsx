@@ -95,9 +95,9 @@ function isNoRowsError(err: unknown): boolean {
 }
 
 const effortConfig = {
-  rapida: { icon: Zap, label: '1pt', className: 'text-effort-rapida' },
-  normal: { icon: Flame, label: '3pts', className: 'text-effort-normal' },
-  pesada: { icon: Dumbbell, label: '5pts', className: 'text-effort-pesada' },
+  rapida: { icon: Zap, label: '1pt', className: 'text-effort-rapida-ink' },
+  normal: { icon: Flame, label: '3pts', className: 'text-effort-normal-ink' },
+  pesada: { icon: Dumbbell, label: '5pts', className: 'text-effort-pesada-ink' },
 }
 
 function TaskCard({
@@ -127,9 +127,10 @@ function TaskCard({
       <Button
         variant={isDone ? 'outline' : 'default'}
         size="icon"
-        className={`w-10 h-10 rounded-full shrink-0 cursor-pointer ${
-          isDone ? 'border-success text-success' : ''
+        className={`w-11 h-11 rounded-full shrink-0 cursor-pointer ${
+          isDone ? 'border-success-ink text-success-ink' : ''
         }`}
+        aria-label={isDone ? es.board.markOpen : es.board.markDone}
         disabled={busy}
         onClick={() => (isDone ? onReopen(task.id) : onComplete(task.id))}
       >

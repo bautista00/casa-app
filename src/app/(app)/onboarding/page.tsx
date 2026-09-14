@@ -143,7 +143,7 @@ export default function OnboardingPage() {
               <Label htmlFor="name">{es.auth.enterName}</Label>
               <Input
                 id="name"
-                placeholder="Bauti"
+                placeholder={es.auth.namePlaceholder}
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 className="h-12 text-base"
@@ -174,7 +174,7 @@ export default function OnboardingPage() {
               className="w-full h-12 text-base font-semibold cursor-pointer"
               disabled={saving || !displayName.trim()}
             >
-              {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Continuar'}
+              {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : es.common.continue}
             </Button>
           </CardContent>
         </Card>
@@ -194,7 +194,7 @@ export default function OnboardingPage() {
               <div>
                 <h3 className="font-semibold text-lg">{es.onboarding.createHouse}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Creá una casa nueva y compartí el código
+                  {es.onboarding.createHouseDesc}
                 </p>
               </div>
             </CardContent>
@@ -206,12 +206,12 @@ export default function OnboardingPage() {
           >
             <CardContent className="flex items-center gap-4 py-6">
               <div className="w-14 h-14 rounded-2xl bg-accent/20 flex items-center justify-center">
-                <UserPlus className="w-7 h-7 text-accent" />
+                <UserPlus className="w-7 h-7 text-accent-ink" />
               </div>
               <div>
                 <h3 className="font-semibold text-lg">{es.onboarding.joinHouse}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Uníte con el código de otra casa
+                  {es.onboarding.joinHouseDesc}
                 </p>
               </div>
             </CardContent>
@@ -247,7 +247,7 @@ export default function OnboardingPage() {
                     key={d}
                     type="button"
                     onClick={() => setWeekEndDay(d)}
-                    className={`py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                    className={`min-h-11 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer ${
                       weekEndDay === d
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-muted hover:bg-muted/80'
@@ -264,7 +264,7 @@ export default function OnboardingPage() {
                 onClick={() => setStep('choose')}
                 className="flex-1 h-12 cursor-pointer"
               >
-                Volver
+                {es.common.back}
               </Button>
               <Button
                 onClick={handleCreateHouse}
@@ -305,7 +305,7 @@ export default function OnboardingPage() {
                 onClick={() => setStep('choose')}
                 className="flex-1 h-12 cursor-pointer"
               >
-                Volver
+                {es.common.back}
               </Button>
               <Button
                 onClick={handleJoinHouse}

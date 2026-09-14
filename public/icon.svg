@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Casa">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6366F1"/>
+      <stop offset="1" stop-color="#4F46E5"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="116" fill="url(#g)"/>
+  <path d="M256 118 106 244v22a26 26 0 0 0 42 20l108-91 108 91a26 26 0 0 0 42-20v-22z" fill="#F3821D"/>
+  <path d="M256 186 150 276v100a34 34 0 0 0 34 34h50V320h44v90h50a34 34 0 0 0 34-34V276z" fill="#FAFCFF"/>
+</svg>

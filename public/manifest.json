@@ -1,0 +1,21 @@
+{
+  "name": "Casa — Organicen la casa juntos",
+  "short_name": "Casa",
+  "description": "Asigná tareas, sumá puntos, ganá la semana. La app para familias y compañeros de casa.",
+  "lang": "es-AR",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f9fd",
+  "theme_color": "#4F46E5",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

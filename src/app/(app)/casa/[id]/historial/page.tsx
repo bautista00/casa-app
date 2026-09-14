@@ -50,7 +50,7 @@ export default async function HistorialPage({
         <Card className="border-2 border-crown/30 shadow-lg">
           <div className="bg-gradient-to-r from-crown/10 to-crown/5 px-4 py-3">
             <h2 className="font-bold text-lg font-[family-name:var(--font-heading)] flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-crown" />
+              <Trophy className="w-5 h-5 text-crown-ink" />
               {es.history.hallOfFame}
             </h2>
           </div>
@@ -65,7 +65,7 @@ export default async function HistorialPage({
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
                       i === 0
-                        ? 'bg-crown text-white'
+                        ? 'bg-crown text-crown-foreground'
                         : 'bg-muted text-muted-foreground'
                     }`}
                   >
@@ -76,12 +76,12 @@ export default async function HistorialPage({
                     {h.profile.display_name}
                   </span>
                   <div className="flex items-center gap-3 text-sm">
-                    <span className="flex items-center gap-1 text-crown">
+                    <span className="flex items-center gap-1 text-crown-ink">
                       <Trophy className="w-4 h-4" />
                       {h.wins}
                     </span>
                     {h.streak > 1 && (
-                      <span className="flex items-center gap-1 text-accent">
+                      <span className="flex items-center gap-1 text-accent-ink">
                         <Flame className="w-4 h-4" />
                         {h.streak}
                       </span>

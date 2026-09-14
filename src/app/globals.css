@@ -46,13 +46,22 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  /* Casa custom colors */
+  /* Casa custom colors — bright `*` tokens are FILLS, `*-ink` are the
+     text-safe counterparts (CASA-020). Never set a `*` token as a foreground
+     on a light surface: they are chosen for saturation, not for contrast. */
   --color-crown: var(--crown);
+  --color-crown-ink: var(--crown-ink);
+  --color-crown-foreground: var(--crown-foreground);
   --color-success: var(--success);
+  --color-success-ink: var(--success-ink);
   --color-warning: var(--warning);
   --color-effort-rapida: var(--effort-rapida);
+  --color-effort-rapida-ink: var(--effort-rapida-ink);
   --color-effort-normal: var(--effort-normal);
+  --color-effort-normal-ink: var(--effort-normal-ink);
   --color-effort-pesada: var(--effort-pesada);
+  --color-effort-pesada-ink: var(--effort-pesada-ink);
+  --color-accent-ink: var(--accent-ink);
 }
 
 :root {
@@ -71,17 +80,25 @@
   --muted-foreground: oklch(0.46 0.03 270);
   --accent: oklch(0.72 0.17 55);
   --accent-foreground: oklch(0.25 0.06 55);
+  --accent-ink: oklch(0.525 0.13 55);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.88 0.03 270);
   --input: oklch(0.90 0.02 270);
   --ring: oklch(0.55 0.18 265);
-  /* Gamification */
+  /* Gamification — fills stay bright, `-ink` carries the text (CASA-020) */
   --crown: oklch(0.82 0.17 85);
+  --crown-ink: oklch(0.52 0.105 85);
+  /* text that sits ON the gold fill (the winner's rank pill) */
+  --crown-foreground: oklch(0.38 0.09 75);
   --success: oklch(0.65 0.18 155);
+  --success-ink: oklch(0.50 0.13 155);
   --warning: oklch(0.78 0.15 65);
   --effort-rapida: oklch(0.72 0.15 155);
+  --effort-rapida-ink: oklch(0.475 0.12 158);
   --effort-normal: oklch(0.60 0.17 265);
+  --effort-normal-ink: oklch(0.50 0.17 265);
   --effort-pesada: oklch(0.65 0.20 30);
+  --effort-pesada-ink: oklch(0.515 0.20 30);
   /* Charts */
   --chart-1: oklch(0.55 0.20 265);
   --chart-2: oklch(0.72 0.17 55);
@@ -114,16 +131,25 @@
   --muted-foreground: oklch(0.65 0.03 270);
   --accent: oklch(0.72 0.17 55);
   --accent-foreground: oklch(0.99 0.005 55);
+  --accent-ink: oklch(0.69 0.16 55);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.65 0.20 265);
+  /* Mirrored inks: on a dark card the text has to get LIGHTER, not darker.
+     The fills are unchanged, so `--crown-foreground` stays dark (CASA-020). */
   --crown: oklch(0.82 0.17 85);
+  --crown-ink: oklch(0.655 0.13 85);
+  --crown-foreground: oklch(0.38 0.09 75);
   --success: oklch(0.65 0.18 155);
+  --success-ink: oklch(0.635 0.155 155);
   --warning: oklch(0.78 0.15 65);
   --effort-rapida: oklch(0.72 0.15 155);
+  --effort-rapida-ink: oklch(0.66 0.15 158);
   --effort-normal: oklch(0.65 0.20 265);
+  --effort-normal-ink: oklch(0.685 0.16 265);
   --effort-pesada: oklch(0.65 0.20 30);
+  --effort-pesada-ink: oklch(0.70 0.19 30);
   --chart-1: oklch(0.65 0.20 265);
   --chart-2: oklch(0.72 0.17 55);
   --chart-3: oklch(0.65 0.18 155);

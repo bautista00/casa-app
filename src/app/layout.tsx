@@ -22,10 +22,13 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
 }
 
+// No `maximumScale` and no `userScalable: false` — pinch-zoom has to keep
+// working (WCAG 2.1 SC 1.4.4, CASA-018). The flag was only ever guarding
+// against iOS auto-zoom on a focused input, and `ui/input.tsx` already renders
+// at `text-base` (16 px) on mobile, which is what actually prevents that.
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
   themeColor: '#4F46E5',
 }
 

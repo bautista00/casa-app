@@ -99,9 +99,11 @@ export default function AjustesPage() {
           dreaded_template_id: dreadedTemplateId,
         })
       }
-      if (phone.trim()) {
-        await updatePhone(supabase, userId, phone.trim())
-      }
+      // An empty field means "stop messaging me" — `updatePhone` is typed
+      // `phone: string | null` precisely so it can be cleared. The old
+      // truthiness guard skipped the call and left the number in place while
+      // still toasting "¡Guardado!" (CASA-023).
+      await updatePhone(supabase, userId, phone.trim() || null)
       toast.success(es.settings.saved)
     } catch {
       toast.error(es.errors.generic)
@@ -132,7 +134,7 @@ export default function AjustesPage() {
           variant="ghost"
           size="icon"
           onClick={() => router.push(`/casa/${householdId}`)}
-          className="cursor-pointer"
+          className="size-11 cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -145,7 +147,7 @@ export default function AjustesPage() {
       <Card className="border-2">
         <CardHeader className="pb-2 flex-row items-center gap-2">
           <Settings className="w-5 h-5 text-muted-foreground" />
-          <h2 className="font-semibold">General</h2>
+          <h2 className="font-semibold">{es.settings.general}</h2>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -167,7 +169,7 @@ export default function AjustesPage() {
                   type="button"
                   onClick={() => setWeekEndDay(d)}
                   disabled={!isOwner}
-                  className={`py-2 rounded-lg text-xs font-medium cursor-pointer transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
+                  className={`min-h-11 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
                     weekEndDay === d
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-muted hover:bg-muted/80'
@@ -212,11 +214,11 @@ export default function AjustesPage() {
               type="button"
               onClick={() => setDreadedTemplateId(null)}
               disabled={!isOwner}
-              className={`px-3 py-2 rounded-lg border text-sm text-left cursor-pointer transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
+              className={`min-h-11 px-3 py-2 rounded-lg border text-sm text-left cursor-pointer transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
                 !dreadedTemplateId ? 'border-primary bg-primary/10' : 'border-border'
               }`}
             >
-              Ninguna
+              {es.common.none}
             </button>
             {templates.map((t) => (
               <button
@@ -224,7 +226,7 @@ export default function AjustesPage() {
                 type="button"
                 onClick={() => setDreadedTemplateId(t.id)}
                 disabled={!isOwner}
-                className={`px-3 py-2 rounded-lg border text-sm text-left cursor-pointer transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
+                className={`min-h-11 px-3 py-2 rounded-lg border text-sm text-left cursor-pointer transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
                   dreadedTemplateId === t.id ? 'border-destructive bg-destructive/10' : 'border-border'
                 }`}
               >
@@ -233,7 +235,7 @@ export default function AjustesPage() {
             ))}
             {templates.length === 0 && (
               <p className="text-sm text-muted-foreground">
-                Creá tareas recurrentes primero
+                {es.settings.noTemplatesYet}
               </p>
             )}
             {!isOwner && (
@@ -257,7 +259,7 @@ export default function AjustesPage() {
               <span className="text-lg">{m.profile?.emoji}</span>
               <span className="font-medium flex-1">{m.profile?.display_name}</span>
               <Badge variant="secondary" className="text-xs">
-                {m.role === 'owner' ? 'Admin' : 'Miembro'}
+                {m.role === 'owner' ? es.settings.roleOwner : es.settings.roleMember}
               </Badge>
             </div>
           ))}
@@ -272,10 +274,11 @@ export default function AjustesPage() {
                 variant="outline"
                 size="icon"
                 onClick={copyCode}
-                className="cursor-pointer"
+                aria-label={es.settings.copyCode}
+                className="size-11 shrink-0 cursor-pointer"
               >
                 {codeCopied ? (
-                  <Check className="w-4 h-4 text-success" />
+                  <Check className="w-4 h-4 text-success-ink" />
                 ) : (
                   <Copy className="w-4 h-4" />
                 )}
@@ -300,10 +303,11 @@ export default function AjustesPage() {
               placeholder={es.settings.phonePlaceholder}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              aria-describedby="phone-help"
               className="h-10"
             />
-            <p className="text-xs text-muted-foreground">
-              Para recibir recordatorios y el resumen semanal por WhatsApp
+            <p id="phone-help" className="text-xs text-muted-foreground">
+              {es.settings.phoneHelp}
             </p>
           </div>
         </CardContent>

@@ -85,7 +85,7 @@ export function AppShell({ profile, households, children }: AppShellProps) {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="ml-1 gap-1 cursor-pointer"
+                    className="ml-1 h-11 gap-1 cursor-pointer"
                   >
                     <Home className="w-4 h-4" />
                     <span className="max-w-[120px] truncate text-sm">
@@ -121,7 +121,7 @@ export function AppShell({ profile, households, children }: AppShellProps) {
           {/* User menu */}
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Button variant="ghost" size="sm" className="gap-2 cursor-pointer">
+              <Button variant="ghost" size="sm" className="h-11 gap-2 cursor-pointer">
                 <span className="text-lg">{profile.emoji}</span>
                 <span className="text-sm font-medium max-w-[80px] truncate">
                   {profile.display_name}
@@ -156,7 +156,7 @@ export function AppShell({ profile, households, children }: AppShellProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-colors cursor-pointer ${
+                  className={`flex min-h-11 flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl transition-colors cursor-pointer ${
                     isActive
                       ? 'text-primary'
                       : 'text-muted-foreground hover:text-foreground'
@@ -169,7 +169,8 @@ export function AppShell({ profile, households, children }: AppShellProps) {
             })}
             <Link
               href={`/casa/${currentHouseholdId}/nueva`}
-              className="flex flex-col items-center gap-1 px-3 py-2 text-accent hover:text-accent/80 cursor-pointer"
+              aria-label={es.nav.newTask}
+              className="flex min-h-11 flex-col items-center justify-center gap-1 px-3 py-2 cursor-pointer"
             >
               <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-md">
                 <Plus className="w-5 h-5 text-primary-foreground" />

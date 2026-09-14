@@ -67,8 +67,21 @@ export default function NuevaTaskPage() {
   // (CASA-011), so the date is required for non-recurring tasks.
   const missingDueDate = !isRecurring && !dueDate
 
+  // A recurring template only ever produces tasks when its schedule is
+  // satisfiable: `nextOccurrences` bails out immediately on an empty
+  // `days_of_week` (weekly) and a monthly day outside 1..31 can never match a
+  // real date. Saving either one is a task that silently never happens
+  // (CASA-022), so block the save and say why.
+  const missingWeekday =
+    isRecurring && recurrence === 'weekly' && daysOfWeek.length === 0
+  const badDayOfMonth =
+    isRecurring &&
+    recurrence === 'monthly' &&
+    (!Number.isInteger(dayOfMonth) || dayOfMonth < 1 || dayOfMonth > 31)
+  const recurrenceInvalid = missingWeekday || badDayOfMonth
+
   async function handleSave() {
-    if (!title.trim() || missingDueDate) return
+    if (!title.trim() || missingDueDate || recurrenceInvalid) return
     setSaving(true)
     try {
       if (isRecurring) {
@@ -84,7 +97,7 @@ export default function NuevaTaskPage() {
           assignment,
           default_assignee_id: assigneeId,
         })
-        toast.success('Tarea recurrente creada')
+        toast.success(es.task.recurringCreated)
       } else {
         // Create a one-off task
         await createTask(supabase, {
@@ -96,7 +109,7 @@ export default function NuevaTaskPage() {
           due_date: dueDate,
           created_by: userId,
         })
-        toast.success('Tarea creada')
+        toast.success(es.task.created)
       }
       router.push(`/casa/${householdId}`)
     } catch {
@@ -120,7 +133,7 @@ export default function NuevaTaskPage() {
           variant="ghost"
           size="icon"
           onClick={() => router.back()}
-          className="cursor-pointer"
+          className="size-11 cursor-pointer"
         >
           <ArrowLeft className="w-5 h-5" />
         </Button>
@@ -161,21 +174,21 @@ export default function NuevaTaskPage() {
             <Label>{es.task.effort}</Label>
             <div className="grid grid-cols-3 gap-2">
               {([
-                { key: 'rapida' as Effort, icon: Zap, label: es.task.effortRapida },
-                { key: 'normal' as Effort, icon: Flame, label: es.task.effortNormal },
-                { key: 'pesada' as Effort, icon: Dumbbell, label: es.task.effortPesada },
-              ]).map(({ key, icon: Icon, label }) => (
+                { key: 'rapida' as Effort, icon: Zap, label: es.task.effortRapida, ink: 'text-effort-rapida-ink' },
+                { key: 'normal' as Effort, icon: Flame, label: es.task.effortNormal, ink: 'text-effort-normal-ink' },
+                { key: 'pesada' as Effort, icon: Dumbbell, label: es.task.effortPesada, ink: 'text-effort-pesada-ink' },
+              ]).map(({ key, icon: Icon, label, ink }) => (
                 <button
                   key={key}
                   type="button"
                   onClick={() => setEffort(key)}
-                  className={`flex flex-col items-center gap-1 p-3 rounded-xl border-2 transition-all cursor-pointer ${
+                  className={`flex min-h-11 flex-col items-center gap-1 p-3 rounded-xl border-2 transition-all cursor-pointer ${
                     effort === key
                       ? 'border-primary bg-primary/10'
                       : 'border-border hover:border-primary/30'
                   }`}
                 >
-                  <Icon className={`w-5 h-5 text-effort-${key}`} />
+                  <Icon className={`w-5 h-5 ${ink}`} />
                   <span className="text-xs font-medium">{label}</span>
                 </button>
               ))}
@@ -189,7 +202,7 @@ export default function NuevaTaskPage() {
               <button
                 type="button"
                 onClick={() => setAssigneeId(null)}
-                className={`px-3 py-2 rounded-xl border-2 text-sm transition-all cursor-pointer ${
+                className={`min-h-11 px-3 py-2 rounded-xl border-2 text-sm transition-all cursor-pointer ${
                   !assigneeId
                     ? 'border-primary bg-primary/10'
                     : 'border-border hover:border-primary/30'
@@ -202,7 +215,7 @@ export default function NuevaTaskPage() {
                   key={m.profile_id}
                   type="button"
                   onClick={() => setAssigneeId(m.profile_id)}
-                  className={`px-3 py-2 rounded-xl border-2 text-sm transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`min-h-11 px-3 py-2 rounded-xl border-2 text-sm transition-all cursor-pointer flex items-center gap-1.5 ${
                     assigneeId === m.profile_id
                       ? 'border-primary bg-primary/10'
                       : 'border-border hover:border-primary/30'
@@ -263,7 +276,7 @@ export default function NuevaTaskPage() {
                         key={r}
                         type="button"
                         onClick={() => setRecurrence(r)}
-                        className={`px-3 py-2 rounded-lg border text-sm cursor-pointer transition-all ${
+                        className={`min-h-11 px-3 py-2 rounded-lg border text-sm cursor-pointer transition-all ${
                           recurrence === r
                             ? 'border-primary bg-primary/10 font-medium'
                             : 'border-border hover:border-primary/30'
@@ -279,13 +292,17 @@ export default function NuevaTaskPage() {
                 {recurrence === 'weekly' && (
                   <div className="space-y-2">
                     <Label>{es.task.daysOfWeek}</Label>
-                    <div className="grid grid-cols-7 gap-1">
+                    <div
+                      role="group"
+                      aria-describedby={missingWeekday ? 'daysOfWeek-hint' : undefined}
+                      className="grid grid-cols-7 gap-1"
+                    >
                       {[0, 1, 2, 3, 4, 5, 6].map((d) => (
                         <button
                           key={d}
                           type="button"
                           onClick={() => toggleDay(d)}
-                          className={`py-2 rounded-lg text-xs font-medium cursor-pointer transition-all ${
+                          className={`min-h-11 py-2 rounded-lg text-xs font-medium cursor-pointer transition-all ${
                             daysOfWeek.includes(d)
                               ? 'bg-primary text-primary-foreground'
                               : 'bg-muted hover:bg-muted/80'
@@ -295,6 +312,11 @@ export default function NuevaTaskPage() {
                         </button>
                       ))}
                     </div>
+                    {missingWeekday && (
+                      <p id="daysOfWeek-hint" className="text-xs text-destructive">
+                        {es.task.pickAtLeastOneDay}
+                      </p>
+                    )}
                   </div>
                 )}
 
@@ -307,10 +329,17 @@ export default function NuevaTaskPage() {
                       type="number"
                       min={1}
                       max={31}
-                      value={dayOfMonth}
-                      onChange={(e) => setDayOfMonth(parseInt(e.target.value) || 1)}
+                      aria-invalid={badDayOfMonth || undefined}
+                      aria-describedby={badDayOfMonth ? 'dayOfMonth-hint' : undefined}
+                      value={Number.isNaN(dayOfMonth) ? '' : dayOfMonth}
+                      onChange={(e) => setDayOfMonth(parseInt(e.target.value, 10))}
                       className="h-10 w-24"
                     />
+                    {badDayOfMonth && (
+                      <p id="dayOfMonth-hint" className="text-xs text-destructive">
+                        {es.task.dayOfMonthRange}
+                      </p>
+                    )}
                   </div>
                 )}
 
@@ -321,7 +350,7 @@ export default function NuevaTaskPage() {
                     <button
                       type="button"
                       onClick={() => setAssignment('fixed')}
-                      className={`px-3 py-2 rounded-lg border text-sm text-left cursor-pointer transition-all ${
+                      className={`min-h-11 px-3 py-2 rounded-lg border text-sm text-left cursor-pointer transition-all ${
                         assignment === 'fixed'
                           ? 'border-primary bg-primary/10'
                           : 'border-border hover:border-primary/30'
@@ -332,7 +361,7 @@ export default function NuevaTaskPage() {
                     <button
                       type="button"
                       onClick={() => setAssignment('rotate')}
-                      className={`px-3 py-2 rounded-lg border text-sm text-left cursor-pointer transition-all ${
+                      className={`min-h-11 px-3 py-2 rounded-lg border text-sm text-left cursor-pointer transition-all ${
                         assignment === 'rotate'
                           ? 'border-primary bg-primary/10'
                           : 'border-border hover:border-primary/30'
@@ -350,7 +379,7 @@ export default function NuevaTaskPage() {
           <Button
             onClick={handleSave}
             className="w-full h-12 text-base font-semibold cursor-pointer"
-            disabled={saving || !title.trim() || missingDueDate}
+            disabled={saving || !title.trim() || missingDueDate || recurrenceInvalid}
           >
             {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : es.task.save}
           </Button>
