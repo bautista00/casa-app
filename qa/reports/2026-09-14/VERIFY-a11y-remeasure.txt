@@ -1,0 +1,107 @@
+================ CASA-018 · viewport meta (390x844) ================
+  /            final=/login  viewportMeta="width=device-width, initial-scale=1"
+  /login       final=/login  viewportMeta="width=device-width, initial-scale=1"
+  /callback    final=/callback  viewportMeta="width=device-width, initial-scale=1"
+  /casa/abc    final=/login  viewportMeta="width=device-width, initial-scale=1"
+  /onboarding  final=/login  viewportMeta="width=device-width, initial-scale=1"
+  /login input font-size = 16px  (>=16px prevents the iOS auto-zoom maximum-scale was masking)
+
+================ CASA-020 · contrast, LIGHT theme (sRGB canvas readback) ================
+  pair                                                fg                bg                ratio   need   verdict
+  rank pill numeral (leaderboard.tsx:58 / historial:68)rgb(94,58,0)      rgb(246,185,0)    5.70    3      PASS
+  crown-ink trophy count on card                      rgb(132,99,5)     rgb(250,252,255)  5.42    4.5    PASS
+  accent-ink streak on card                           rgb(161,82,0)     rgb(250,252,255)  5.49    4.5    PASS
+  success-ink on card                                 rgb(0,120,64)     rgb(250,252,255)  5.43    4.5    PASS
+  effort-rapida-ink 1pt badge on secondary            rgb(0,112,65)     rgb(224,231,253)  5.01    4.5    PASS
+  effort-normal-ink 3pts badge on secondary           rgb(50,90,194)    rgb(224,231,253)  5.04    4.5    PASS
+  effort-pesada-ink 5pts badge on secondary           rgb(192,24,10)    rgb(224,231,253)  5.04    4.5    PASS
+  muted-foreground on card                            rgb(81,88,105)    rgb(250,252,255)  6.93    4.5    PASS
+  primary on card (regression)                        rgb(47,88,200)    rgb(250,252,255)  6.10    4.5    PASS
+  destructive on card (regression)                    rgb(231,0,11)     rgb(250,252,255)  4.64    4.5    PASS
+  foreground on background (regression)               rgb(14,15,35)     rgb(242,245,252)  17.32   4.5    PASS
+  primary-foreground on primary (regression)          rgb(250,252,255)  rgb(47,88,200)    6.10    4.5    PASS
+  secondary-foreground on secondary (regression)      rgb(28,29,62)     rgb(224,231,253)  13.14   4.5    PASS
+  accent-foreground on accent (regression)            rgb(55,24,1)      rgb(243,130,29)   6.20    4.5    PASS
+  [BEFORE] white on crown fill                        rgb(255,255,255)  rgb(246,185,0)    1.77    -      (baseline)
+  [BEFORE] text-crown on card                         rgb(246,185,0)    rgb(250,252,255)  1.72    -      (baseline)
+  [BEFORE] text-accent on card                        rgb(243,130,29)   rgb(250,252,255)  2.55    -      (baseline)
+  [BEFORE] text-success on card                       rgb(0,173,91)     rgb(250,252,255)  2.87    -      (baseline)
+  [BEFORE] text-effort-rapida on card                 rgb(67,192,122)   rgb(250,252,255)  2.26    -      (baseline)
+  [BEFORE] text-effort-pesada on card                 rgb(240,80,61)    rgb(250,252,255)  3.45    -      (baseline)
+  crown-ink on bg-crown/10 over card (winner row)     rgb(132,99,5)     rgb(250,245,230)  5.11    4.5    PASS
+  accent-ink on bg-crown/10 over card                 rgb(161,82,0)     rgb(250,245,230)  5.18    4.5    PASS
+  effort-rapida-ink on bg-primary/10 over card        rgb(0,112,65)     rgb(230,236,250)  5.23    4.5    PASS
+  effort-normal-ink on bg-primary/10 over card        rgb(50,90,194)    rgb(230,236,250)  5.25    4.5    PASS
+  accent-ink on bg-accent/20 over background          rgb(161,82,0)     rgb(242,222,207)  4.33    4.5    FAIL
+  success-ink on bg-success/5 over card               rgb(0,120,64)     rgb(238,248,247)  5.16    4.5    PASS
+  destructive on bg-destructive/10 over card          rgb(231,0,11)     rgb(248,227,231)  3.89    4.5    FAIL
+  --> failing pairs (light): 2
+
+================ CASA-020 · contrast, DARK theme (sRGB canvas readback) ================
+  pair                                                fg                bg                ratio   need   verdict
+  rank pill numeral (leaderboard.tsx:58 / historial:68)rgb(94,58,0)      rgb(246,185,0)    5.70    3      PASS
+  crown-ink trophy count on card                      rgb(181,137,19)   rgb(19,25,45)     5.44    4.5    PASS
+  accent-ink streak on card                           rgb(228,124,32)   rgb(19,25,45)     5.98    4.5    PASS
+  success-ink on card                                 rgb(10,165,95)    rgb(19,25,45)     5.45    4.5    PASS
+  effort-rapida-ink 1pt badge on secondary            rgb(21,173,110)   rgb(33,40,61)     5.04    4.5    PASS
+  effort-normal-ink 3pts badge on secondary           rgb(105,149,252)  rgb(33,40,61)     5.09    4.5    PASS
+  effort-pesada-ink 5pts badge on secondary           rgb(254,102,82)   rgb(33,40,61)     5.04    4.5    PASS
+  muted-foreground on card                            rgb(136,143,162)  rgb(19,25,45)     5.39    4.5    PASS
+  primary on card (regression)                        rgb(82,133,255)   rgb(19,25,45)     5.11    4.5    PASS
+  destructive on card (regression)                    rgb(255,100,103)  rgb(19,25,45)     6.04    4.5    PASS
+  foreground on background (regression)               rgb(232,235,242)  rgb(8,12,26)      16.33   4.5    PASS
+  primary-foreground on primary (regression)          rgb(250,252,255)  rgb(82,133,255)   3.32    4.5    FAIL
+  secondary-foreground on secondary (regression)      rgb(232,235,242)  rgb(33,40,61)     12.26   4.5    PASS
+  accent-foreground on accent (regression)            rgb(255,251,249)  rgb(243,130,29)   2.55    4.5    FAIL
+  [BEFORE] white on crown fill                        rgb(255,255,255)  rgb(246,185,0)    1.77    -      (baseline)
+  [BEFORE] text-crown on card                         rgb(246,185,0)    rgb(19,25,45)     9.84    -      (baseline)
+  [BEFORE] text-accent on card                        rgb(243,130,29)   rgb(19,25,45)     6.66    -      (baseline)
+  [BEFORE] text-success on card                       rgb(0,173,91)     rgb(19,25,45)     5.92    -      (baseline)
+  [BEFORE] text-effort-rapida on card                 rgb(67,192,122)   rgb(19,25,45)     7.52    -      (baseline)
+  [BEFORE] text-effort-pesada on card                 rgb(240,80,61)    rgb(19,25,45)     4.91    -      (baseline)
+  crown-ink on bg-crown/10 over card (winner row)     rgb(181,137,19)   rgb(42,41,41)     4.53    4.5    PASS
+  accent-ink on bg-crown/10 over card                 rgb(228,124,32)   rgb(42,41,41)     4.98    4.5    PASS
+  effort-rapida-ink on bg-primary/10 over card        rgb(21,173,110)   rgb(25,36,66)     5.27    4.5    PASS
+  effort-normal-ink on bg-primary/10 over card        rgb(105,149,252)  rgb(25,36,66)     5.32    4.5    PASS
+  accent-ink on bg-accent/20 over background          rgb(228,124,32)   rgb(55,36,27)     5.03    4.5    PASS
+  success-ink on bg-success/5 over card               rgb(10,165,95)    rgb(18,32,47)     5.15    4.5    PASS
+  destructive on bg-destructive/10 over card          rgb(255,100,103)  rgb(43,33,51)     5.31    4.5    PASS
+  --> failing pairs (dark): 2
+
+================ CASA-019 · touch targets at 390x844 ================
+  LOW  h=    32  w=    32  ui/button size="icon" (shared scale, untouched)
+  OK   h=    44  w=    44  board-view.tsx:130 complete/undo button
+  OK   h=    44  w=    44  nueva/page.tsx:136 back arrow
+  OK   h=    44  w=    44  ajustes/page.tsx:137 back arrow
+  OK   h=    44  w=    44  ajustes/page.tsx:277 copy-code
+  OK   h=    52  w= 54.59  nueva/page.tsx:184 effort card
+  OK   h=    44  w= 51.28  nueva/page.tsx:205 assignee pill
+  OK   h=    44  w= 49.28  nueva/page.tsx:279 recurrence pill
+  OK   h=    44  w= 20.11  nueva/page.tsx:303 day-grid cell
+  OK   h=    44  w= 49.28  nueva/page.tsx:353 assignment pill
+  OK   h=    44  w= 20.11  ajustes/page.tsx:171 week-end day cell
+  OK   h=    44  w= 49.28  ajustes/page.tsx:216 dreaded pill
+  OK   h=    44  w= 20.11  onboarding/page.tsx:250 week-end day cell
+  OK   h=    44  w=    44  onboarding emoji picker
+  OK   h=    44  w= 26.59  app-shell.tsx:88 household menu btn
+  OK   h=    44  w= 26.59  app-shell.tsx:124 user menu btn
+  OK   h=    44  w= 50.59  app-shell.tsx:159 bottom-nav link
+  OK   h=    44  w= 50.59  app-shell.tsx:172 bottom-nav + link
+  OK   h=    48  w=   390  primary CTA
+  OK   h=    48  w=   320  callback back-to-login link
+  --> Casa call sites with height < 44px: 0 (excluding the deliberately untouched shared ui/button size-8)
+
+================ CASA-014 · /callback timeout, 390x844 ================
+  @ 1000ms  spinner=true  link=none  text="Estamos verificando tu enlace..."
+  @ 5000ms  spinner=true  link=none  text="Estamos verificando tu enlace..."
+  @ 9000ms  spinner=false  link=48px "Volver a iniciar sesión"  text="El enlace ya venció Puede que lo hayas usado antes o que haya pasado mucho tiempo. Pedí uno nuevo y listo. Volver a iniciar sesión"
+  @15000ms  spinner=false  link=48px "Volver a iniciar sesión"  text="El enlace ya venció Puede que lo hayas usado antes o que haya pasado mucho tiempo. Pedí uno nuevo y listo. Volver a iniciar sesión"
+
+  --- /callback?error=access_denied (dead link reported in the query string) ---
+  @1200ms  spinner=false  text="El enlace ya venció Puede que lo hayas usado antes o que haya pasado mucho tiempo. Pedí uno nuevo y listo. Volver a iniciar sesión"
+
+  --- /callback#error=access_denied (implicit flow, hash fragment) ---
+  @1200ms  spinner=false  text="El enlace ya venció Puede que lo hayas usado antes o que haya pasado mucho tiempo. Pedí uno nuevo y listo. Volver a iniciar sesión"
+
+================ console errors/warnings during the sweep ================
+  (none)

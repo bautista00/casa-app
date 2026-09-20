@@ -1,0 +1,36 @@
+======== CASA-020 follow-up · composited pairs measured against their REAL usage site ========
+  (thresholds: 4.5 WCAG 1.4.3 body text · 3.0 WCAG 1.4.11 non-text graphics / large text)
+
+  PASS    4.58 (need 3)  fg=rgb(161,82,0) bg=rgb(249,228,210)
+        onboarding:209 UserPlus icon (28px, graphical) accent-ink on bg-accent/20 over CARD
+  PASS    4.58 (need 4.5)  fg=rgb(161,82,0) bg=rgb(249,228,210)
+           ^ same pair judged as body text (4.5 threshold)
+  PASS   14.42 (need 4.5)  fg=rgb(55,24,1) bg=rgb(249,240,232)
+        leaderboard:125 weekly prize, accent-foreground on bg-accent/10 over CARD
+  PASS    3.89 (need 3)  fg=rgb(231,0,11) bg=rgb(248,227,231)
+        error-state:31 AlertCircle (32px, graphical) destructive on bg-destructive/10 over CARD
+  FAIL    2.20 (need 3)  fg=rgb(243,130,29) bg=rgb(242,234,230)
+        callback:65 MailWarning (32px, graphical) accent on bg-accent/10 over BACKGROUND
+  PASS   15.42 (need 4.5)  fg=rgb(14,15,35) bg=rgb(248,227,231)
+        ajustes:230 dreaded pill selected, foreground on bg-destructive/10 over CARD
+  PASS   15.97 (need 4.5)  fg=rgb(14,15,35) bg=rgb(230,236,250)
+        nueva:186 selected effort card, foreground on bg-primary/10 over CARD
+  PASS    5.11 (need 4.5)  fg=rgb(132,99,5) bg=rgb(250,245,230)
+        historial:52 hall-of-fame Trophy crown-ink on crown/10 over CARD
+  PASS    5.43 (need 4.5)  fg=rgb(0,120,64) bg=rgb(250,252,255)
+        board-view done button border/icon success-ink on CARD
+  PASS    4.64 (need 4.5)  fg=rgb(231,0,11) bg=rgb(250,252,255)
+        nueva/ajustes validation hint destructive on CARD (12px text)
+  PASS    6.10 (need 4.5)  fg=rgb(250,252,255) bg=rgb(47,88,200)
+        day-grid selected primary-foreground on primary (light)
+
+  --> failing pairs at their real usage sites: 1
+
+  NOTE: `variant="destructive"` (ui/button.tsx:18, ui/badge.tsx:15 — the only text-on-tint
+  destructive pairs in the codebase) is used at ZERO Casa call sites:
+  $ grep -rn 'variant="destructive"' src/app src/components --include=*.tsx | grep -v /ui/  ->  (no hits)
+
+======== dark-theme reachability (is the .dark block a live surface?) ========
+  {"htmlClass":"nunito_a6ff0f11-module__01d5aq__variable fredoka_c9ef90a3-module__xGPkTq__variable h-full antialiased","bodyClass":"min-h-full flex flex-col","anyDark":false,"colorScheme":"normal"}
+  globals.css:5  @custom-variant dark (&:is(.dark *))  -> class-gated, no prefers-color-scheme rule
+  no ThemeProvider / next-themes mount in src/app/layout.tsx -> `.dark` is never applied at runtime
