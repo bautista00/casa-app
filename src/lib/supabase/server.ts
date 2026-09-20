@@ -1,4 +1,5 @@
 import { createServerClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 
 export async function createClient() {
@@ -28,9 +29,14 @@ export async function createClient() {
 }
 
 export function createServiceClient() {
-  const { createClient } = require('@supabase/supabase-js')
-  return createClient(
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    // Fail loudly rather than construct a client with an "undefined" key —
+    // relevant to CASA-003, where a half-configured deploy silently ran
+    // with a bad secret instead of refusing to start.
+    throw new Error('SUPABASE_SERVICE_ROLE_KEY is not set')
+  }
+  return createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY
   )
 }
