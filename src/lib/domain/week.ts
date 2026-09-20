@@ -32,10 +32,12 @@ export function getWeekWindow(
   const today = startOfDay(zonedNow)
   const currentDayOfWeek = today.getDay() // 0=Sun..6=Sat
 
-  // How many days until the next weekEndDay?
-  let daysUntilEnd = (weekEndDay - currentDayOfWeek + 7) % 7
-  // If today IS the end day, this week has already ended — move to next
-  if (daysUntilEnd === 0) daysUntilEnd = 7
+  // Days until the midnight that CLOSES the week: the midnight AFTER
+  // weekEndDay, not weekEndDay itself (CASA-004 — the exclusive boundary was
+  // off by one day, which shifted the whole window one day earlier and
+  // excluded the end day from its own week).
+  // If today is the end day, the week closes tonight → 1 day away.
+  const daysUntilEnd = ((weekEndDay - currentDayOfWeek + 7) % 7) + 1
 
   const end = addDays(today, daysUntilEnd)
   const start = subDays(end, 7)
