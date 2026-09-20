@@ -3,10 +3,10 @@ import { createServiceClient } from '@/lib/supabase/server'
 import { nextOccurrences, pickRotatedAssignee } from '@/lib/domain/recurrence'
 import { EFFORT_POINTS } from '@/types'
 import type { Effort } from '@/types'
+import { cronAuthorized } from '@/app/api/cron/auth'
 
 export async function GET(request: NextRequest) {
-  const authHeader = request.headers.get('authorization')
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!cronAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -37,8 +37,13 @@ export async function GET(request: NextRequest) {
       14
     )
 
-    // Determine assignee
-    let assigneeId = template.default_assignee_id
+    // Default (non-rotating) assignee. For 'rotate' templates this is
+    // recomputed PER OCCURRENCE below (CASA-007) rather than once here — a
+    // single value reused across the whole batch is what made a fresh
+    // rotating daily task hand its first ~15 days to the same person.
+    const fixedAssigneeId = template.default_assignee_id
+    let memberIds: string[] = []
+    let lastAssignee: string | null = null
 
     if (template.assignment === 'rotate') {
       // Get household members for rotation
@@ -49,9 +54,10 @@ export async function GET(request: NextRequest) {
         .order('joined_at')
 
       if (members && members.length > 0) {
-        const memberIds = members.map((m: { profile_id: string }) => m.profile_id)
+        memberIds = members.map((m: { profile_id: string }) => m.profile_id)
 
-        // Find the last assigned instance to determine rotation
+        // Find the last assigned instance to determine where the rotation
+        // currently stands.
         const { data: lastTask } = await supabase
           .from('tasks')
           .select('assignee_id')
@@ -61,10 +67,7 @@ export async function GET(request: NextRequest) {
           .limit(1)
           .single()
 
-        assigneeId = pickRotatedAssignee(
-          memberIds,
-          lastTask?.assignee_id ?? null
-        )
+        lastAssignee = lastTask?.assignee_id ?? null
       }
     }
 
@@ -80,26 +83,64 @@ export async function GET(request: NextRequest) {
 
     if (!createdBy) continue
 
+    // Which of these candidate dates already have a row? A repeated cron run
+    // (or a run whose horizon overlaps the previous one) must not touch
+    // those — not the assignee, not anything else — and must not "spend" a
+    // rotation step on a date that turns out to already exist (CASA-002 x
+    // CASA-007: idempotency and per-occurrence rotation have to agree).
+    const existingDates =
+      dates.length > 0
+        ? new Set(
+            (
+              (
+                await supabase
+                  .from('tasks')
+                  .select('due_date')
+                  .eq('template_id', template.id)
+                  .in('due_date', dates)
+              ).data ?? []
+            ).map((r: { due_date: string }) => r.due_date)
+          )
+        : new Set<string>()
+
     for (const dateStr of dates) {
-      // Insert with ON CONFLICT DO NOTHING (the UNIQUE constraint handles idempotency)
-      const { error } = await supabase.from('tasks').upsert(
-        {
-          household_id: template.household_id,
-          template_id: template.id,
-          title: template.title,
-          notes: template.notes,
-          effort: template.effort,
-          points: EFFORT_POINTS[template.effort as Effort],
-          assignee_id: assigneeId,
-          due_date: dateStr,
-          status: 'open',
-          created_by: createdBy,
-        },
-        { onConflict: 'template_id,due_date', ignoreDuplicates: true }
-      )
+      if (existingDates.has(dateStr)) continue // already generated — idempotent skip
+
+      let assigneeId = fixedAssigneeId
+      if (template.assignment === 'rotate' && memberIds.length > 0) {
+        assigneeId = pickRotatedAssignee(memberIds, lastAssignee)
+        lastAssignee = assigneeId
+      }
+
+      // Plain insert, not upsert: the uniqueness guarantee now lives in a
+      // PARTIAL unique index (template_id, due_date) WHERE template_id IS NOT
+      // NULL (CASA-002 — the old table-wide constraint blocked a second
+      // one-off task on any given day, even across households). PostgREST's
+      // upsert `onConflict` only emits a column list, and Postgres requires
+      // a partial index's predicate to be named explicitly in the ON
+      // CONFLICT target to use it as the arbiter — something the query
+      // builder has no option for. A plain insert sidesteps that: a
+      // concurrent duplicate simply fails the unique index with 23505, which
+      // is treated the same as "already exists, skip".
+      const { error } = await supabase.from('tasks').insert({
+        household_id: template.household_id,
+        template_id: template.id,
+        title: template.title,
+        notes: template.notes,
+        effort: template.effort,
+        points: EFFORT_POINTS[template.effort as Effort],
+        assignee_id: assigneeId,
+        due_date: dateStr,
+        status: 'open',
+        created_by: createdBy,
+      })
 
       if (!error) {
         results.push(`${template.title} → ${dateStr}`)
+      } else if (error.code !== '23505') {
+        // Not a benign duplicate — surface it, but keep processing the rest
+        // of the batch instead of aborting the whole cron run.
+        results.push(`${template.title} → ${dateStr}: ${error.message}`)
       }
     }
   }
