@@ -53,6 +53,12 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    // CASA-024: manifest.json (and icon.svg, already covered by the .svg
+    // branch below) need to be served directly, not redirected to /login —
+    // a browser fetches the web-app manifest without credentials, so it was
+    // 307'd even for a signed-in member. Anchored right after the leading
+    // "/", the same way favicon.ico already is, so this excludes only that
+    // exact top-level path — it does not widen to match any real route.
+    '/((?!_next/static|_next/image|favicon.ico|manifest.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 }
