@@ -41,55 +41,56 @@ Side exits: `REOPENED` · `NEEDS-INFO` · `WONTFIX` · `CANNOT-REPRODUCE` · `DU
 | CASA-003 | Cron routes accept `Authorization: Bearer undefined` when `CRON_SECRET` is unset | S1 | P0 | SEC | backend-dev | OPEN |
 | CASA-004 | The week runs from the chosen end-day instead of to it — the whole week is shifted one day | S1 | P0 | DOM | backend-dev | OPEN |
 | CASA-005 | Any signed-in user can read every Casa user's name and phone number | S1 | P0 | SEC | backend-dev | OPEN |
-| CASA-006 | Board decides "today" in the server's timezone, so after 21:00 in Argentina it is a day ahead | S2 | P1 | BOARD | frontend-dev | FIXED |
+| CASA-006 | Board decides "today" in the server's timezone, so after 21:00 in Argentina it is a day ahead | S2 | P1 | BOARD | frontend-dev | VERIFIED |
 | CASA-007 | "Rotar entre miembros" gives the first 15 days of a rotating task to the same person | S2 | P1 | CRON | backend-dev | OPEN |
-| CASA-008 | Any data-layer error shows the raw Next.js error page instead of a Spanish message | S2 | P1 | BOARD | frontend-dev | FIXED |
+| CASA-008 | Any data-layer error shows the raw Next.js error page instead of a Spanish message | S2 | P1 | BOARD | frontend-dev | VERIFIED |
 | CASA-009 | A non-member with a join code can add *any other user* to a household | S2 | P1 | SEC | backend-dev | OPEN |
-| CASA-010 | Non-owner members get "¡Guardado!" but their settings changes are silently discarded | S2 | P1 | SET | frontend-dev | FIXED |
-| CASA-011 | Tasks with no due date show a points badge but can never score | S2 | P1 | BOARD | frontend-dev | FIXED |
-| CASA-012 | Double-tapping "hecha" un-completes the task in the UI and shows an error | S2 | P2 | BOARD | frontend-dev | FIXED |
+| CASA-010 | Non-owner members get "¡Guardado!" but their settings changes are silently discarded | S2 | P1 | SET | frontend-dev | VERIFIED |
+| CASA-011 | Tasks with no due date show a points badge but can never score | S2 | P1 | BOARD | frontend-dev | VERIFIED |
+| CASA-012 | Double-tapping "hecha" un-completes the task in the UI and shows an error | S2 | P2 | BOARD | frontend-dev | VERIFIED |
 | CASA-013 | `npm run lint` fails — `require()` import in `src/lib/supabase/server.ts` | S3 | P1 | PERF | backend-dev | OPEN |
-| CASA-014 | `/callback` spins forever when the magic link is expired or invalid | S3 | P1 | AUTH | frontend-dev | FIXED |
-| CASA-015 | Realtime task updates drop the assignee, so the name vanishes from the card | S3 | P2 | BOARD | frontend-dev | FIXED |
-| CASA-016 | 14 user-visible strings (15 sites) are hardcoded instead of living in `src/lib/i18n/es.ts` | S3 | P2 | I18N | frontend-dev | FIXED |
-| CASA-017 | Tuteo instead of voseo: "Elige la cena del viernes" | S3 | P2 | I18N | frontend-dev | FIXED |
-| CASA-018 | `maximum-scale=1` blocks pinch-zoom on every page | S3 | P2 | A11Y | frontend-dev | FIXED |
-| CASA-019 | Icon-only buttons are 32–40 px — below the 44 px touch target on the primary device | S3 | P2 | A11Y | frontend-dev | FIXED |
-| CASA-020 | Gamification colours fail WCAG AA contrast (winner's rank pill measures 1.77:1) | S3 | P2 | A11Y | frontend-dev | FIXED |
-| CASA-021 | History shows an 8-day week: the exclusive end boundary is printed as the last day | S3 | P2 | HIST | frontend-dev | FIXED |
-| CASA-022 | A weekly recurring task saved with no weekday is accepted and never generates anything | S3 | P2 | TASK | frontend-dev | FIXED |
-| CASA-023 | A member can add a phone number but can never remove it | S3 | P2 | SET | frontend-dev | FIXED |
+| CASA-014 | `/callback` spins forever when the magic link is expired or invalid | S3 | P1 | AUTH | frontend-dev | VERIFIED |
+| CASA-015 | Realtime task updates drop the assignee, so the name vanishes from the card | S3 | P2 | BOARD | frontend-dev | VERIFIED |
+| CASA-016 | 14 user-visible strings (15 sites) are hardcoded instead of living in `src/lib/i18n/es.ts` | S3 | P2 | I18N | frontend-dev | VERIFIED |
+| CASA-017 | Tuteo instead of voseo: "Elige la cena del viernes" | S3 | P2 | I18N | frontend-dev | VERIFIED |
+| CASA-018 | `maximum-scale=1` blocks pinch-zoom on every page | S3 | P2 | A11Y | frontend-dev | VERIFIED |
+| CASA-019 | Icon-only buttons are 32–40 px — below the 44 px touch target on the primary device | S3 | P2 | A11Y | frontend-dev | VERIFIED |
+| CASA-020 | Gamification colours fail WCAG AA contrast (winner's rank pill measures 1.77:1) | S3 | P2 | A11Y | frontend-dev | VERIFIED |
+| CASA-021 | History shows an 8-day week: the exclusive end boundary is printed as the last day | S3 | P2 | HIST | frontend-dev | VERIFIED |
+| CASA-022 | A weekly recurring task saved with no weekday is accepted and never generates anything | S3 | P2 | TASK | frontend-dev | VERIFIED |
+| CASA-023 | A member can add a phone number but can never remove it | S3 | P2 | SET | frontend-dev | VERIFIED |
 | CASA-024 | `/manifest.json` is declared in metadata but does not exist | S3 | P3 | PERF | backend-dev | OPEN |
+| CASA-025 | The expired-link icon is nearly invisible on the "El enlace ya venció" screen | S3 | P2 | A11Y | frontend-dev | OPEN |
 
 ## Fix order
 
-_Set by QA at the end of each cycle. Work top-down._
+_Set by QA at the end of each cycle. Work top-down. Re-set 2026-09-20 after the verification pass._
+
+**The entire frontend queue from RUN-2026-09-14 is now `VERIFIED` (CASA-006, -008, -010, -011, -012,
+-014, -015, -016, -017, -018, -019, -020, -021, -022, -023). What is left is the backend queue, which
+has not moved, plus one new frontend defect.**
 
 **backend-dev — start here. Nothing else can be verified until CASA-001 lands.**
 
-1. **CASA-001** — RLS infinite recursion. The app is unusable for every signed-in user; it blocks
-   verification of CASA-006, -008, -010, -011, -012, -015 and every signed-in test case in this suite.
+1. **CASA-001** — RLS infinite recursion. The app is unusable for every signed-in user. It is also the
+   single blocker on the *live* half of every fix verified this cycle: CASA-006, -008, -010, -011, -012,
+   -015, -022 and -023 are all verified by code path only because no signed-in route renders.
 2. **CASA-002** — `unique nulls not distinct (template_id, due_date)`. Second task of the day fails.
 3. **CASA-003** — cron auth bypass when `CRON_SECRET` is unset.
 4. **CASA-005** — global profile/phone read policy.
 5. **CASA-004** — week window off by one day. Needs a decision recorded in `CONTRACT.md` (see entry).
+   Re-read CASA-021's expected strings after this lands — it changes which dates are stored.
 6. **CASA-009** — `join_household` trusts the caller-supplied `user_id`.
 7. **CASA-007** — rotation assigns one person the whole 15-day batch.
-8. **CASA-013** — lint error (`require()`), blocks the exit criteria.
+8. **CASA-013** — lint error (`require()`). Still the only thing standing between this tree and a green
+   `npm run lint`; exit criterion 3 cannot pass without it.
+9. **CASA-024** — proxy matcher at `src/proxy.ts:56` (rerouted 2026-09-14, see below).
 
-**frontend-dev — CASA-014, -016, -017, -018, -019, -020, -021, -024 can be done now; the rest need CASA-001 first.**
+**frontend-dev — one open item, and it is not urgent.**
 
-9. **CASA-006** — household-timezone "today" on the board.
-10. **CASA-008** — error boundaries (`error.tsx`) with Spanish copy.
-11. **CASA-010** — hide/disable settings a non-owner cannot save.
-12. **CASA-011** — require a due date (or score undated tasks).
-13. **CASA-012** — in-flight guard on complete/reopen + "ya estaba hecha" handling.
-14. **CASA-014** — `/callback` timeout and error state.
-15. **CASA-015** — keep the joined assignee across realtime updates.
-16. **CASA-021** — print `week_end - 1 day` in history.
-17. **CASA-018**, **CASA-019**, **CASA-020** — a11y batch (zoom, touch targets, contrast).
-18. **CASA-016**, **CASA-017** — i18n batch.
-19. **CASA-022**, **CASA-023** — validation and polish.
+10. **CASA-025** — `/callback` expired-link icon at 2.20:1. One-word fix (`text-accent` →
+    `text-accent-ink`, a token CASA-020 already added and measured at 4.75:1 on this surface). Nothing
+    depends on it; take it whenever `src/app/(auth)/callback/page.tsx` is next touched.
 
 **Rerouted 2026-09-14 by the coordinator:** **CASA-024** moves to `backend-dev`. The manifest and its
 icon now exist, but the last step is the proxy matcher at `src/proxy.ts:56`, which is auth plumbing and
@@ -101,6 +102,104 @@ outside the frontend boundary — the one-line diff is in the entry and as an OP
 ## Defects
 
 <!-- newest first; full entries below -->
+
+### CASA-025 — The expired-link icon is nearly invisible on the "El enlace ya venció" screen
+
+| | |
+|---|---|
+| **Severity** | S3 (minor) |
+| **Priority** | P2 |
+| **Area** | A11Y |
+| **Owner** | frontend-dev |
+| **Status** | OPEN |
+| **Found in** | RUN-2026-09-20 · env E1 stub · viewport 390×844 |
+| **Test case** | TC-A11Y-003 |
+
+**Summary**
+The failure state added by the CASA-014 fix puts a 32 px `MailWarning` icon in `text-accent` on a
+`bg-accent/10` tile, and on `/callback` that tile sits directly on the page **background** — there is no card.
+The icon measures **2.20:1**, against the 3.0:1 that WCAG 2.1 SC 1.4.11 requires for a non-text graphic that
+carries meaning. It is the only visual signal on the one screen a family member reaches when their magic link
+has died, and on a phone outdoors it washes out into the tile. Everything else on that screen is fine — this is
+the last unmet pair from the CASA-020 palette work, and it is in new markup rather than in CASA-020's scope.
+
+**Steps to reproduce** (from a cold start)
+1. `cp .env.local.example .env.local && npm run dev`
+2. Open `http://localhost:3000/callback?error=access_denied` at 390×844 in Chromium.
+3. Sample the rendered icon colour and the composited tile colour and compute the WCAG contrast ratio
+   (sRGB canvas readback, same method as CASA-020).
+
+Reproduced: 2/2 — browser canvas readback on 2026-09-14
+(`qa/reports/2026-09-14/VERIFY-contrast-real-usage-sites.txt`) and an independent arithmetic recompute from the
+measured token values on 2026-09-20 (`qa/reports/2026-09-20/CASA-025-contrast-recompute.txt`). Both give 2.20.
+
+**Expected**
+≥ 3.0:1, per WCAG 2.1 SC 1.4.11 (non-text contrast) and `qa/TEST-PLAN.md` §2, which ranks accessibility above
+visual polish. The equivalent icon in `src/components/error-state.tsx:31` gets this right at **3.68:1**, and the
+`-ink` tokens added for CASA-020 exist precisely so a warm hue can be used as a foreground.
+
+**Actual**
+`text-accent` rgb(243,130,29) on `bg-accent/10` composited over `--background` rgb(242,245,252) = rgb(242,234,230)
+→ **2.20:1**. Note the tile surface is not the problem: the same pair over a card is 2.33:1 and still fails. The
+token is what has to change.
+
+**Evidence**
+- Screenshot: `qa/reports/2026-09-14/CASA-014-verify-callback-timeout-390.png` (and
+  `CASA-014-verify-callback-error-param-390.png` for the `?error=` form)
+- `qa/reports/2026-09-14/VERIFY-contrast-real-usage-sites.txt`
+- `qa/reports/2026-09-20/CASA-025-contrast-recompute.txt`:
+  ```
+  FAIL  2.20 (need 3)  fg=rgb(243,130,29) bg=rgb(242,234,230)
+        CASA-025  callback:65  MailWarning 32px  accent on bg-accent/10 over BACKGROUND
+  FAIL  2.33 (need 3)  fg=rgb(243,130,29) bg=rgb(249,240,232)
+                (same icon if the tint sat on a CARD, for comparison)
+  ...
+    PASS  4.75 (need 3.0)  text-accent-ink  rgb(161,82,0)  (existing token from CASA-020)
+    FAIL  2.20 (need 3.0)  text-accent      rgb(243,130,29) (current)
+  ```
+
+**Root cause**
+`src/app/(auth)/callback/page.tsx:64-66`
+```tsx
+        <div className="w-16 h-16 rounded-3xl bg-accent/10 flex items-center justify-center shadow-sm">
+          <MailWarning className="w-8 h-8 text-accent" />
+        </div>
+```
+`--accent` (`globals.css:81`, `oklch(0.72 0.17 55)`) is a *fill* lightness. Used as a foreground on a 10 % tint of
+itself, the figure and the ground are almost the same colour. CASA-020 moved every other such usage onto an
+`-ink` token; this file was written for CASA-014 in the same cycle and never got the sweep.
+
+**Suggested fix** _(suggestion — the owner decides)_
+One word, reusing the token CASA-020 already added and measured:
+```diff
+-          <MailWarning className="w-8 h-8 text-accent" />
++          <MailWarning className="w-8 h-8 text-accent-ink" />
+```
+`--accent-ink` rgb(161,82,0) on the same tile measures **4.75:1** — clears the 3.0 non-text threshold with room,
+and clears 4.5 as well, so it stays correct if the icon ever gains a text label. The `bg-accent/10` tile keeps its
+warm fill, so the screen does not get colder. Mirror it in `.dark` if you touch that block (see CASA-020).
+
+**Acceptance criteria**
+- [ ] The `/callback` failure-state icon measures ≥ 3.0:1 against its composited tile at 390×844, light theme
+- [ ] The `bg-accent/10` tile itself is unchanged — the screen keeps its warm accent
+- [ ] `/callback` still shows the expired state at ≤ 10 s and for both `?error=` and `#error=` (CASA-014 holds)
+- [ ] No other `text-accent`/`text-crown`/`text-success` foreground has crept back in outside `src/components/ui/**`
+
+**Regression risk**
+Only this screen; the token already exists and is used elsewhere. Re-run the CASA-014 timeout sweep afterwards,
+since the change is in the same component's failure branch.
+
+**Verification steps** _(how QA will close this)_
+1. Re-run the real-usage contrast pass over `/callback?error=access_denied` at 390×844 and assert ≥ 3.0.
+2. Re-run the CASA-014 1 s / 5 s / 9 s / 15 s samples and the `#error=` variant to confirm nothing regressed.
+
+**Cross-boundary note** _(only when both sides are involved)_
+n/a
+
+**Dev notes** _(filled by the dev)_
+**Fix applied** _(filled by the dev: files + one-line description)_
+
+---
 
 ### CASA-024 — The browser asks for `/manifest.json` on every page load and never gets it
 
@@ -247,7 +346,7 @@ without which `GET /manifest.json` remains `307 → /login`.
 | **Priority** | P2 |
 | **Area** | SET |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport n/a |
 | **Test case** | TC-SET-004 |
 
@@ -326,6 +425,18 @@ project to assert `phone_e164 IS NULL` against), so this is verified by code pat
 `updatePhone(supabase, userId, phone.trim() || null)`, so an emptied field writes `NULL` instead of
 being skipped.
 
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E0 static. `src/app/(app)/casa/[id]/ajustes/page.tsx:106` now calls
+`updatePhone(supabase, userId, phone.trim() || null)` unconditionally — the `if (phone.trim())` guard that made
+the clear case unreachable is gone, so an emptied field writes `NULL` through a signature that is already typed
+`phone: string | null` (`src/lib/data/profiles.ts:32`). Criterion 3 (saving an unchanged number) is the same code
+path. The dev also bound the field to its "por WhatsApp" help text with `aria-describedby`, which is a genuine
+improvement over what I asked for. Their reading of the toast is correct: it was never the bug, and with the guard
+gone a failed phone write now surfaces as `es.errors.generic` instead of a false success.
+Not covered: criteria 1 and 2 end to end — asserting `profiles.phone_e164 IS NULL` and re-opening Ajustes to an
+empty field both need a signed-in session (CASA-001, no E2). Re-run TC-SET-004 then.
+
 ---
 
 ### CASA-022 — A weekly recurring task saved with no weekday silently never happens
@@ -336,7 +447,7 @@ being skipped.
 | **Priority** | P2 |
 | **Area** | TASK |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E0 static + L1 probe · viewport 390×844 |
 | **Test case** | TC-TASK-006 |
 
@@ -433,6 +544,21 @@ auth and blocked by CASA-001, so this is verified by reading the state machine p
 weekday selected or a monthly one has a day outside 1–31; the day-of-month field no longer coerces an
 empty value to 1.
 
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E0 static. `recurrenceInvalid` (`src/app/(app)/casa/[id]/nueva/page.tsx:76-81`) is
+wired into both the disabled Guardar (`:382`) and the handler's own early return (`:84`), so criterion 1 holds on
+both paths. Spanish hints come from `es.ts` in voseo — `es.task.pickAtLeastOneDay` (`:96`) at `nueva:314`, and
+`es.task.dayOfMonthRange` (`:97`) at `nueva:340` — criterion 2.
+The dev tightened the monthly half past my suggestion and **was right to**: my `dayOfMonth < 1 || dayOfMonth > 31`
+passes when the field is cleared, because the old `parseInt('') || 1` silently rewrote an empty field to "the
+1st". The guard is now `!Number.isInteger(dayOfMonth) || dayOfMonth < 1 || dayOfMonth > 31` and the input renders
+`''` rather than the string "NaN" (`:334-335`) — criterion 3, with 0 and 32 rejected by the same expression.
+Criterion 4 and the named regression risk both hold structurally: `recurrenceInvalid` is `false` whenever
+`isRecurring` is `false`, so the one-off path (TC-TASK-001) is byte-identical to before.
+Not covered: the live save and the `task_templates.days_of_week` assertion — `/nueva` is behind auth (CASA-001, no
+E2). Re-run TC-TASK-006 and TC-TASK-001 then.
+
 ---
 
 ### CASA-021 — Historial shows every week as 8 days long
@@ -443,7 +569,7 @@ empty value to 1.
 | **Priority** | P2 |
 | **Area** | HIST |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-HIST-002 |
 
@@ -515,6 +641,19 @@ Took the "better alternative": the card now calls `formatWeekRange` instead of r
 **Fix applied**
 `src/app/(app)/casa/[id]/historial/page.tsx` — the week card renders `formatWeekRange(...)` (which subtracts the exclusive end day) instead of printing `week_end` verbatim.
 
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E0 static + probe. The dev took the "better alternative" — the card calls
+`formatWeekRange` (`src/app/(app)/casa/[id]/historial/page.tsx:9`, `:124-127`) instead of re-deriving the range,
+so there is one definition of how a week reads and this cannot drift again. Probe against the current stored
+convention (`week_end` exclusive): a week stored `2026-09-13`/`2026-09-20` renders **"13 Sep – 19 Sep"** — 7 days,
+criterion 1 — and the next card starts on 20 Sep, so consecutive cards no longer share a date (criterion 2).
+Criterion 3 is satisfied by construction, since the card now *is* `formatWeekRange`.
+Evidence: `qa/reports/2026-09-20/VERIFY-probe-021-006.txt`.
+Ordering caveat restated: CASA-004 changes which dates are *stored*, not how they are displayed, so this fix holds
+either way — but re-read the expected strings after CASA-004 lands.
+Not covered: the live card at 390×844 with a genuinely closed week (CASA-001, no E2).
+
 ---
 
 ### CASA-020 — The winner's rank badge is almost unreadable; gamification colours fail contrast
@@ -525,7 +664,7 @@ Took the "better alternative": the card now calls `formatWeekRange` instead of r
 | **Priority** | P2 |
 | **Area** | A11Y |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-A11Y-003 |
 
@@ -678,6 +817,37 @@ background, so nothing here is estimated:
 Evidence: `qa/reports/2026-09-14/CASA-fix-a11y-measurements.txt`, screenshots `qa/reports/2026-09-14/CASA-fix-leaderboard-390-light.png` and
 `CASA-fix-leaderboard-390-dark.png`.
 
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E1 stub · 390×844, re-measured independently by the same sRGB canvas readback, plus a
+second pass that measured every composited pair **against its real usage site** rather than against `bg-card`
+alone.
+- Criterion 2 (rank pill ≥ 3:1): **5.70** — `--crown-foreground` on the unchanged gold fill. The dev's deviation
+  here is right and my suggestion was wrong: `bg-crown text-[--crown-ink]` would have landed near 3:1, which
+  satisfies the pill criterion but not the "≥4.5 for every pair used as text" criterion directly above it, and the
+  numeral *is* text.
+- Criterion 1 (light): **all 14 text pairs ≥ 4.5**, and the re-measured BEFORE column reproduces this entry's
+  original numbers exactly (white-on-crown 1.77, `text-crown` 1.72, `text-accent` 2.55, `text-success` 2.87,
+  `text-primary` 6.10, `text-destructive` 4.64), so before/after are directly comparable.
+- Criterion 3 (fills keep the bright hues): confirmed — `--crown`, `--success`, `--accent`, `--effort-*` are
+  unchanged; only foregrounds moved.
+The abstract sweep showed 4 failing pairs. The real-usage follow-up reduces that to **one**, and it is **not in
+this entry's scope**: `src/app/(auth)/callback/page.tsx:65`, markup added by the CASA-014 fix, filed as
+**CASA-025**. Of the other three: `variant="destructive"` (`ui/button.tsx:18`, `ui/badge.tsx:15`) has **zero**
+non-`ui/` call sites, so those pairs never render; and the two dark-theme failures
+(`primary-foreground` on `primary` 3.32, `accent-foreground` on `accent` 2.55) are pre-existing tokens this fix
+never touched, on a surface with **no runtime path** — `globals.css:5` gates `.dark` on `&:is(.dark *)` with no
+`prefers-color-scheme` rule and there is no ThemeProvider in `src/app/layout.tsx`, so `document.documentElement`
+never carries the class (`anyDark: false`, `colorScheme: "normal"` at runtime). Correctness-for-later, recorded in
+the run report's Observations for whoever adds the theme switcher — not grounds to reopen this entry.
+Evidence: `qa/reports/2026-09-14/VERIFY-a11y-remeasure.txt`,
+`qa/reports/2026-09-14/VERIFY-contrast-real-usage-sites.txt`.
+Correction to my own earlier note: the `error-state.tsx:31` icon was recorded as sitting on a **card**; it
+actually sits on `background` (no ancestor sets `bg-card`). Recomputed on the right surface it is **3.68** against
+a 3.0 threshold — still a pass, verdict unchanged. `qa/reports/2026-09-20/CASA-025-contrast-recompute.txt`.
+Not covered: re-screenshotting the *live* leaderboard and history cards (CASA-001). The measurements are of the
+real components against the app's compiled stylesheet — markup parity, not a live route.
+
 ---
 
 ### CASA-019 — Icon-only buttons are too small to tap reliably on a phone
@@ -688,7 +858,7 @@ Evidence: `qa/reports/2026-09-14/CASA-fix-a11y-measurements.txt`, screenshots `q
 | **Priority** | P2 |
 | **Area** | A11Y |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-A11Y-002 |
 
@@ -798,6 +968,27 @@ assignee/recurrence pills 44, dreaded-task pills 44, effort cards 52, header but
 links 44 — Casa call sites below 44 px: **0**.
 Evidence: `qa/reports/2026-09-14/CASA-fix-a11y-measurements.txt`.
 
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E1 stub · 390×844, re-measured at every Casa call site rather than spot-checked.
+**Zero Casa call sites below 44 px in height**, including all the icon-only buttons this entry was filed against:
+board complete/undo `44×44` (`board-view.tsx:130`), the `/nueva` and `/ajustes` back arrows `44×44`
+(`nueva:136`, `ajustes:137`), copy-code `44×44` (`ajustes:277`), the household and user menu buttons `44` tall
+(`app-shell.tsx:88`, `:124`), bottom-nav links `44` tall (`app-shell.tsx:159`, `:172`), the onboarding emoji
+picker `44×44`, the primary CTA `48`, and the `/callback` back-to-login link `48`.
+The shared `ui/button.tsx` `size="icon"` is still `size-8` (32 px) and I am **deliberately not calling that a
+failure**: it is the vendored shadcn scale, no Casa call site uses it unmodified, and every consumer overrides it.
+Evidence: `qa/reports/2026-09-14/VERIFY-a11y-remeasure.txt` (CASA-019 block).
+**Correction to my own acceptance criterion.** Criterion 1 as I wrote it — "every `<button>`/`<a>` … ≥ 44×44" — is
+unachievable for the Lun–Dom day grid and I was wrong to write it that way. `grid grid-cols-7 gap-1` inside
+`main.px-4` → `Card.border-2` → `CardContent.px-(--card-spacing)` at a 390 px viewport leaves
+`(390−32−4−48−24)/7 ≈ 40 px` per cell, so a 7-across weekday picker physically cannot be 44 px wide on a phone.
+The cells are `min-h-11` (44 px tall) × ~40 px wide — above WCAG 2.2 SC 2.5.8's 24×24 minimum and within the
+spacing exception. I am treating that width as acceptable, not as a defect; the criterion is the thing that was
+wrong. Same reading applies to the other ≥44-tall pills (effort, assignee, recurrence, dreaded).
+Not covered: the Playwright target sweep on the *live* signed-in routes (CASA-001). The measurements above come
+from the real components rendered against the app's own compiled stylesheet, not from the routes.
+
 ---
 
 ### CASA-018 — Pinch-zoom is disabled on every page
@@ -808,7 +999,7 @@ Evidence: `qa/reports/2026-09-14/CASA-fix-a11y-measurements.txt`.
 | **Priority** | P2 |
 | **Area** | A11Y |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-A11Y-001 |
 
@@ -892,6 +1083,21 @@ Verified live, signed out, in headless Chromium at 390×844 — this one needed 
 Input font size on `/login` measured `16px`, so the iOS auto-zoom the flag was masking stays prevented.
 Evidence: `qa/reports/2026-09-14/CASA-fix-a11y-measurements.txt`, screenshot `qa/reports/2026-09-14/CASA-fix-login-390.png`.
 
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E1 stub · 390×844, independently re-measured. The `viewport` export
+(`src/app/layout.tsx:29-33`) is now `width: 'device-width', initialScale: 1` with no `maximumScale` and no
+`userScalable`, and the **rendered** meta tag is `width=device-width, initial-scale=1` on all five routes checked
+(`/`, `/login`, `/callback`, `/casa/abc`, `/onboarding` — the last three via their signed-out redirect), so
+criteria 1 and 3 hold at the markup level.
+The regression this entry warned about is clear too: the `/login` email input computes to **16 px**
+(`src/components/ui/input.tsx:11` is `text-base` with `md:text-sm`, so the ≥16 px that prevents iOS auto-zoom
+applies exactly where it matters — the phone), which is what made `maximum-scale=1` removable in the first place.
+Evidence: `qa/reports/2026-09-14/VERIFY-a11y-remeasure.txt` (CASA-018 block),
+`qa/reports/2026-09-14/CASA-018-verify-login-390.png`.
+Not covered: criterion 2's *actual* pinch gesture on real iOS Safari — no device available. The markup no longer
+suppresses it, which is the whole of what the code can do.
+
 ---
 
 ### CASA-017 — "Elige la cena del viernes" is tuteo, not voseo
@@ -902,7 +1108,7 @@ Evidence: `qa/reports/2026-09-14/CASA-fix-a11y-measurements.txt`, screenshot `qa
 | **Priority** | P2 |
 | **Area** | I18N |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport n/a |
 | **Test case** | TC-I18N-002 |
 
@@ -973,6 +1179,19 @@ no other tuteo imperative anywhere in the source. Every new key added for CASA-0
 `grep -nE "\b(Elige|Escribe|Agrega|Completa|Crea|Selecciona|Ingresa)\b" src/lib/i18n/es.ts src/app src/components`
 returns no hits.
 
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E0 static. `src/lib/i18n/es.ts` now reads
+`weeklyPrizePlaceholder: 'Ej: Elegí la cena del viernes'`. The acceptance grep is empty, and I widened the word
+list past the one in the criteria (adding `Elimina|Guarda|Envía|Revisa|Intenta|Une`) and ran it over `es.ts`,
+`src/app` and `src/components` — no tuteo imperative anywhere in the source:
+```
+$ grep -rnE "\b(Elige|Escribe|Agrega|Completa|Crea|Selecciona|Ingresa|Elimina|Guarda|Envía|Revisa|Intenta|Une)\b" src/lib/i18n/es.ts src/app src/components
+(no hits)
+```
+Every key added for CASA-011/-012/-016/-022 is voseo too ("Elegí una fecha…", "Elegí al menos un día…",
+"Elegí un día del mes entre 1 y 31."). Nothing left to check live.
+
 ---
 
 ### CASA-016 — 14 user-visible strings live in components instead of `es.ts`
@@ -983,7 +1202,7 @@ returns no hits.
 | **Priority** | P2 |
 | **Area** | I18N |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport n/a |
 | **Test case** | TC-I18N-001 |
 
@@ -1114,6 +1333,27 @@ and a missing one would be a type error.
 all 15 hardcoded sites now resolve through `es.*`, and the leaderboard crown carries an `aria-label`
 instead of a touch-invisible `title`.
 
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E0 static. Both greps from **Steps to reproduce** return **zero hits** outside
+`src/components/ui/**`, re-run verbatim today:
+```
+$ grep -rn --include=*.tsx -E ">[A-ZÁÉÍÓÚÑ][^<>{}]{2,}<|placeholder=\"|title=\"" src/app src/components --exclude-dir=ui | grep -v "es\."
+(no hits)
+$ grep -rnE "toast\.(success|error|info)\(" src/app src/components | grep -v "es\."
+(no hits)
+```
+Widened beyond the original two greps as a cross-check: `aria-label="` literals outside `ui/` — none; a
+heuristic sweep for any remaining 6+ character Spanish string literal in `src/app`/`src/components` outside
+`ui/` — none user-visible. All 15 sites from the inventory table now resolve through `es.*`, and every new key is
+voseo (see CASA-017). The three extra accessible names the dev added (`es.nav.newTask`, `es.settings.copyCode`,
+`es.board.markOpen`) are in `es.ts` at `:51`, `:150`-region and `:61`, and the leaderboard crown is `role="img"`
+with an `aria-label` instead of a touch-invisible `title` — which is the right reading of the note in my
+**Suggested fix**.
+Not covered: the visual pass over `/onboarding`, `/nueva` and `/ajustes` at 390×844 (behind auth, CASA-001).
+`/login` was re-screenshotted: `qa/reports/2026-09-14/CASA-018-verify-login-390.png`. Nothing can render
+`undefined` — every key is a literal on the typed `es` object and `npx tsc --noEmit` is clean.
+
 ---
 
 ### CASA-015 — When someone else completes a task, the assignee's name disappears from the card
@@ -1124,7 +1364,7 @@ instead of a touch-invisible `title`.
 | **Priority** | P2 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-BOARD-005 |
 
@@ -1203,6 +1443,24 @@ Went past the suggested merge, because preserving `t.assignee` wholesale is wron
 **Fix applied**
 `src/components/board-view.tsx` — realtime INSERT/UPDATE payloads are merged through a `withJoins` helper that re-attaches `assignee`/`completed_by_profile` from the members list instead of replacing the task wholesale.
 
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E0 static. The dev went past my suggested merge and **the deviation is an
+improvement, not a shortcut** — preserving `t.assignee` wholesale (what I suggested) would have kept showing the
+*previous* person when the update is a re-assignment. `withJoins` (`src/components/board-view.tsx:67-82`) resolves
+`assignee` and `completed_by_profile` from the `members` prop by `assignee_id` / `completed_by`, and falls back to
+the card's existing profile only when the id is unchanged. I checked the lookup has the data it needs:
+`HouseholdMember.profile` carries the join (`src/types/index.ts:36-42`) and `members` is the list the server passes
+straight from `getHouseholdMembers` (`casa/[id]/page.tsx:29,89`) — this is finally the use for the prop lint had
+been flagging as unused.
+Criteria: assignee survives an UPDATE (`:223-229`); an INSERT now resolves its assignee too and is idempotent
+against a duplicate id (`:216-222`), which closes the `:161` gap this entry flagged as a secondary; reopen still
+clears `completed_by`/`completed_at`, because a reopen payload carries `completed_by: null`, `profileOf(null)`
+returns `undefined` and the same-id fallback does not fire.
+Not covered: the two-device realtime run in **Verification steps** — needs two authenticated contexts on one
+household (CASA-001, no E2). One thing to re-check then: a task assigned to a profile that is *not* in `members`
+(e.g. a member who left) resolves to `undefined` on a realtime update where the id also changed.
+
 ---
 
 ### CASA-014 — An expired magic link leaves you on a spinner forever
@@ -1213,7 +1471,7 @@ Went past the suggested merge, because preserving `t.assignee` wholesale is wron
 | **Priority** | P1 |
 | **Area** | AUTH |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-AUTH-006 |
 
@@ -1313,6 +1571,24 @@ Verified live, signed-out — this was the one bug in the batch that did not nee
 
 **Fix applied**
 `src/app/(auth)/callback/page.tsx` + `src/lib/i18n/es.ts` (`auth.verifying`, `auth.linkExpired`, `auth.linkExpiredHelp`, `auth.backToLogin`) — the callback now shows Spanish progress copy, gives up after 8 s (immediately on an `error` param), offers a 48 px link back to `/login`, and unsubscribes the auth listener on unmount.
+
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E1 stub · 390×844, independently re-measured rather than read off the dev's notes.
+`/callback` shows the Spanish verifying copy immediately and falls to the expired-link state well inside the 10 s
+criterion: sampled at 1 s and 5 s the spinner is still up with "Estamos verificando tu enlace…"; at 9 s and 15 s
+the spinner is gone and the card reads "El enlace ya venció … Pedí uno nuevo y listo." with a **48 px** "Volver a
+iniciar sesión" link (criterion 2, and ≥44 px per CASA-019). Both dead-link shapes are handled and fail on the
+next tick rather than after the full timeout — `/callback?error=access_denied` and `/callback#error=access_denied`
+both show the expired state at 1.2 s (`page.tsx:23-25`, `:52`). Criterion 4: the subscription is unsubscribed in
+the effect cleanup (`page.tsx:55-58`). No console errors or warnings during the sweep.
+Evidence: `qa/reports/2026-09-14/VERIFY-a11y-remeasure.txt` (CASA-014 block),
+`qa/reports/2026-09-14/CASA-014-verify-callback-timeout-390.png`,
+`qa/reports/2026-09-14/CASA-014-verify-callback-error-param-390.png`.
+Not covered: criterion 3 — a **valid** magic link still redirecting to `/onboarding` with no visible delay. That
+needs a real Supabase project to issue a link (no E2).
+Note: the fix's new markup introduced one contrast failure, filed separately as **CASA-025** (the 32 px
+`MailWarning` at `page.tsx:65`). It does not affect this entry's criteria.
 
 ---
 
@@ -1418,7 +1694,7 @@ The 118 remaining warnings are noise, most of them from `.claude/skills/**` vend
 | **Priority** | P2 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-BOARD-004 |
 
@@ -1524,6 +1800,24 @@ Implemented the client guard, plus the "already done" handling the acceptance cr
 **Fix applied**
 `src/components/board-view.tsx` + `src/lib/i18n/es.ts` (`board.alreadyDone`) — in-flight lock on complete/reopen with the button disabled while a request is open, and `PGRST116` treated as "ya estaba hecha" instead of a failure.
 
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E0 static. I checked the specific thing the dev changed from my suggestion — the lock
+being a `useRef<Set<string>>` rather than state — and **it is the correct call**: `lock()`
+(`src/components/board-view.tsx:191-196`) mutates `inFlight.current` synchronously before any `await`, so the
+second of two taps in the same tick reads the id as already present and returns `false`. My suggested
+`useState<Set<string>>` would not have: both handlers in the same tick close over the same pre-update `busy`, so
+both would pass the guard and both would fire a request. The state copy at `:189` exists only to drive
+`disabled={busy.includes(task.id)}` (`:348`, `:134`), which is belt-and-braces, not the lock.
+`PGRST116` handling verified against the failure path this entry documents: `isNoRowsError` (`:89-95`) matches
+PostgREST's zero-rows-under-`.single()` code, and on that branch the card is **left done** and the toast is
+`es.board.alreadyDone` ("Esa tarea ya estaba hecha", `es.ts:66`) — criterion 3. Criterion 4 holds because a real
+network failure carries no `code`, so it takes the revert branch (`:265-273`) and restores the whole `previous`
+task object rather than hand-patching fields, which also keeps the CASA-015 joins intact. `handleReopen`
+(`:280-301`) has the same guard plus the revert it previously lacked — the regression risk this entry named.
+Not covered: criterion 1's request count. Counting `PATCH`es under a Playwright `dblclick` needs a rendered board
+(CASA-001, no E2). Re-run TC-BOARD-004 with `page.on('request')` once it lands.
+
 ---
 
 ### CASA-011 — A task with no due date shows "3 pts" but can never earn a point
@@ -1534,7 +1828,7 @@ Implemented the client guard, plus the "already done" handling the acceptance cr
 | **Priority** | P1 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-LEAD-004 |
 
@@ -1622,6 +1916,26 @@ Took the "make the date required" route, not the "score by `completed_at`" one. 
 **Fix applied**
 `src/app/(app)/casa/[id]/nueva/page.tsx` — a one-off task now requires a due date: the input is `required`, "Guardar" is disabled while it is empty, and `es.task.dueDateRequired` explains why.
 
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E0 static. **I accept the "require a due date" route** and am closing the entry
+rather than holding it open pending a backend change, for three reasons:
+- Criterion 1 is written as an either/or and the date-required branch is the one taken:
+  `src/app/(app)/casa/[id]/nueva/page.tsx:68` (`missingDueDate`), `:238` (`required`), `:246` (the Spanish hint
+  `es.task.dueDateRequired`), `:382` (Guardar disabled) and `:84` (the handler itself bails).
+- Criterion 2 follows because the dateless state is now **unreachable**, which I checked rather than assumed:
+  `createTask` has exactly one caller in the codebase (`nueva/page.tsx:103`), and it now passes
+  `due_date: dueDate` rather than `dueDate || null`; the only other producer of task rows is
+  `src/app/api/cron/generate/route.ts:94`, which always writes `due_date: dateStr`.
+- Criterion 3 follows from both scorers filtering on the same non-null `due_date`.
+The dev's reasoning for not taking the `completed_at` route is also the right call — shipping only the client half
+would have left exactly the "two scorers that disagree" defect this entry names.
+Not covered / residual (agreeing with the dev's note): **pre-existing** dateless rows still render under "Esta
+semana" with a points badge (`board-view.tsx:51-52`) and still will not score. There is no production data —
+CASA-001 means no signed-in page has ever rendered — so this is fixture hygiene, recorded in the run report's
+Observations, not an open defect. Re-run TC-LEAD-001…004 and TC-CRON-003…005 against real data once CASA-001 and
+CASA-004 land.
+
 ---
 
 ### CASA-010 — A non-owner is told "¡Guardado!" while their settings change is thrown away
@@ -1632,7 +1946,7 @@ Took the "make the date required" route, not the "score by `completed_at`" one. 
 | **Priority** | P1 |
 | **Area** | SET |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E0 static + local Postgres RLS harness · viewport 390×844 |
 | **Test case** | TC-SET-002 |
 
@@ -1726,6 +2040,19 @@ Took the frontend half only, which is enough to close the bug: `isOwner` is deri
 
 **Fix applied**
 `src/app/(app)/casa/[id]/ajustes/page.tsx` + `src/lib/i18n/es.ts` (`settings.ownerOnly`) — name / week-end day / weekly prize / dreaded task are disabled for non-owners with a Spanish explanation, and `updateHousehold` is skipped unless the user owns the household.
+
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E0 static. `src/app/(app)/casa/[id]/ajustes/page.tsx:87` derives `isOwner` from the
+members list; `:159`, `:171`, `:190`, `:216`, `:228` disable house name, week-end day, weekly prize and dreaded
+task for everyone else, with `es.settings.ownerOnly` shown at `:194` and `:241`. `:94` skips `updateHousehold`
+entirely unless `isOwner`, so criterion 4 holds structurally — a member can no longer be toasted "¡Guardado!" for
+a household write that was discarded. `updatePhone` at `:106` still runs for everyone (criterion 2), and the owner
+path is unchanged (criterion 3).
+Not covered: the live member-vs-owner run in E2 / the RLS harness. The residual the dev flagged is real and I
+agree with their routing — a role revoked while the page is open still produces a silent no-op, and only the
+`updateHousehold` "throw on zero rows" hardening closes it. That is `backend-dev`'s and stays recorded in this
+entry's **Cross-boundary note**; it is not a reason to hold this entry open.
 
 ---
 
@@ -1870,7 +2197,7 @@ the same change.
 | **Priority** | P1 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport 390×844 |
 | **Test case** | TC-BOARD-006 |
 
@@ -1957,6 +2284,27 @@ Two deviations from the suggested diff, both deliberate. (1) Next 16 names the p
 
 **Fix applied**
 New `src/app/error.tsx`, `src/app/(app)/error.tsx`, `src/app/global-error.tsx` and `src/components/error-state.tsx`, plus `errors.title`/`description`/`retry`/`goHome` in `src/lib/i18n/es.ts` — a Spanish error card with "Reintentar" at segment, route-group-layout and root-layout level.
+
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E0 static + framework-doc check. Both of the dev's deviations from my suggested diff
+are correct, and I checked them rather than taking them on trust:
+1. **`retry`, not `reset`.** `next@16.3.4` in this tree;
+   `node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/error.md:331` records "`v16.3.0`
+   `retry` prop became stable" and `:157` says "In most cases, you should use `retry()` instead" of `reset`. My
+   suggested diff used `reset` from an older API — the dev is right, the suggestion was wrong.
+2. **The root boundary is required.** The same doc, `:96`: `error.js` "does **not** wrap the `layout.js` or
+   `template.js` above it in the same segment". `(app)/error.tsx` alone would therefore never have caught the
+   `(app)/layout.tsx:19-20` throws this entry cites; `src/app/error.tsx` does, because `(app)/layout.tsx` is a
+   *nested* layout beneath it. `(auth)/layout.tsx` is a passthrough fragment, so the root boundary covers that
+   subtree too and no `(auth)/error.tsx` is needed.
+Criteria 2–4 verified statically: the boundary's segment coverage matches the five routes (`src/app/(app)/**`),
+`src/components/error-state.tsx:63-66` renders only `error.digest` and never `error.message`, the full error is
+`console.error`-ed (`error-state.tsx:24-26`, `global-error.tsx:16-18`), and `global-error.tsx` ships its own
+`<html>`/`<body>` with inline styles. Copy resolves through `es.errors.title/description/retry/goHome`.
+Not covered: criterion 1's *rendered* card. E1 cannot force a data-layer throw — `src/proxy.ts:40-42` redirects an
+unauthenticated request to `/login` before any throwing server component runs, and there is no E2 to break. Re-run
+the "unreachable `NEXT_PUBLIC_SUPABASE_URL`" step from **Verification steps** once CASA-001 lands.
 
 ---
 
@@ -2081,7 +2429,7 @@ n/a
 | **Priority** | P1 |
 | **Area** | BOARD |
 | **Owner** | frontend-dev |
-| **Status** | FIXED |
+| **Status** | VERIFIED |
 | **Found in** | RUN-2026-09-14 · env E0 static + L1 probe · viewport 390×844 |
 | **Test case** | TC-BOARD-003 |
 
@@ -2163,6 +2511,17 @@ Took the in-page fix rather than asking `backend-dev` for a `todayInTimezone` he
 
 **Fix applied**
 `src/app/(app)/casa/[id]/page.tsx` — "today" is now `format(toZonedTime(now, household.timezone), 'yyyy-MM-dd')`, so the board groups by the household's local day instead of the server's.
+
+
+**Verification result** _(filled by QA — RUN-2026-09-20)_
+`VERIFIED` 2026-09-20 · env E0 static + L1 domain probe. `src/app/(app)/casa/[id]/page.tsx:73` now reads
+`format(toZonedTime(now, household.timezone), 'yyyy-MM-dd')`, and the probe reproduces the boundary the entry
+describes: at `2026-09-17T00:30:00Z` (21:30 ART) server-local is `2026-09-17` while household-local is
+`2026-09-16`; at `2026-03-01T02:30:00Z` household-local is `2026-02-28`; at 15:00 UTC the two agree. `weekStart`
+/`weekEnd` on the same page already came from `getWeekWindow`, so both halves of the screen now use the same day.
+Evidence: `qa/reports/2026-09-20/VERIFY-probe-021-006.txt`.
+Not covered: the live 390×844 render of the four board sections at a faked clock — `/casa/[id]` is behind auth
+(CASA-001, no E2). Re-run TC-BOARD-001…003 at 00:30 UTC once it lands.
 
 ---
 

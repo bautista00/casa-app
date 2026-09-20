@@ -1,0 +1,14 @@
+FAIL  2.20 (need 3)  fg=rgb(243,130,29) bg=rgb(242,234,230)
+      CASA-025  callback:65  MailWarning 32px  accent on bg-accent/10 over BACKGROUND
+FAIL  2.33 (need 3)  fg=rgb(243,130,29) bg=rgb(249,240,232)
+                (same icon if the tint sat on a CARD, for comparison)
+PASS  3.68 (need 3)  fg=rgb(231,0,11) bg=rgb(241,221,228)
+      CORRECTION error-state.tsx:31 AlertCircle 32px destructive on bg-destructive/10 over BACKGROUND
+PASS  3.89 (need 3)  fg=rgb(231,0,11) bg=rgb(248,227,231)
+                error-state.tsx:31 as previously recorded (over CARD) — surface was mis-assigned
+PASS  3.89 (need 3)  fg=rgb(231,0,11) bg=rgb(248,227,231)
+                error-state.tsx:31 as previously recorded (over CARD) — surface was mis-assigned
+
+--- candidate fixes for CASA-025 (icon colour on bg-accent/10 over background) ---
+  PASS  4.75 (need 3.0)  text-accent-ink  rgb(161,82,0)  (existing token from CASA-020)
+  FAIL  2.20 (need 3.0)  text-accent      rgb(243,130,29) (current)

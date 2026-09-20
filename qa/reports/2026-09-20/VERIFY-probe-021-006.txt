@@ -1,0 +1,5 @@
+CASA-021 stored 2026-09-13/2026-09-20 renders: 13 Sep – 19 Sep
+CASA-021 next card starts: 20 Sep (shares a date with previous end? false )
+CASA-006 2026-09-17T00:30:00Z  server-local=2026-09-17  household-local=2026-09-16
+CASA-006 2026-09-17T15:00:00Z  server-local=2026-09-17  household-local=2026-09-17
+CASA-006 2026-03-01T02:30:00Z  server-local=2026-03-01  household-local=2026-02-28
