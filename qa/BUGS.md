@@ -36,19 +36,19 @@ Side exits: `REOPENED` · `NEEDS-INFO` · `WONTFIX` · `CANNOT-REPRODUCE` · `DU
 
 | ID | Title | Sev | Pri | Area | Owner | Status |
 |---|---|---|---|---|---|---|
-| CASA-001 | Every signed-in page crashes: RLS policy on `household_members` recurses infinitely | S1 | P0 | SEC | backend-dev | OPEN |
-| CASA-002 | Only one dateless-template task per day can exist — in the whole database, across households | S1 | P0 | TASK | backend-dev | OPEN |
-| CASA-003 | Cron routes accept `Authorization: Bearer undefined` when `CRON_SECRET` is unset | S1 | P0 | SEC | backend-dev | OPEN |
-| CASA-004 | The week runs from the chosen end-day instead of to it — the whole week is shifted one day | S1 | P0 | DOM | backend-dev | OPEN |
-| CASA-005 | Any signed-in user can read every Casa user's name and phone number | S1 | P0 | SEC | backend-dev | OPEN |
+| CASA-001 | Every signed-in page crashes: RLS policy on `household_members` recurses infinitely | S1 | P0 | SEC | backend-dev | FIXED |
+| CASA-002 | Only one dateless-template task per day can exist — in the whole database, across households | S1 | P0 | TASK | backend-dev | FIXED |
+| CASA-003 | Cron routes accept `Authorization: Bearer undefined` when `CRON_SECRET` is unset | S1 | P0 | SEC | backend-dev | FIXED |
+| CASA-004 | The week runs from the chosen end-day instead of to it — the whole week is shifted one day | S1 | P0 | DOM | backend-dev | FIXED |
+| CASA-005 | Any signed-in user can read every Casa user's name and phone number | S1 | P0 | SEC | backend-dev | FIXED |
 | CASA-006 | Board decides "today" in the server's timezone, so after 21:00 in Argentina it is a day ahead | S2 | P1 | BOARD | frontend-dev | FIXED |
-| CASA-007 | "Rotar entre miembros" gives the first 15 days of a rotating task to the same person | S2 | P1 | CRON | backend-dev | OPEN |
+| CASA-007 | "Rotar entre miembros" gives the first 15 days of a rotating task to the same person | S2 | P1 | CRON | backend-dev | FIXED |
 | CASA-008 | Any data-layer error shows the raw Next.js error page instead of a Spanish message | S2 | P1 | BOARD | frontend-dev | FIXED |
-| CASA-009 | A non-member with a join code can add *any other user* to a household | S2 | P1 | SEC | backend-dev | OPEN |
+| CASA-009 | A non-member with a join code can add *any other user* to a household | S2 | P1 | SEC | backend-dev | FIXED |
 | CASA-010 | Non-owner members get "¡Guardado!" but their settings changes are silently discarded | S2 | P1 | SET | frontend-dev | FIXED |
 | CASA-011 | Tasks with no due date show a points badge but can never score | S2 | P1 | BOARD | frontend-dev | FIXED |
 | CASA-012 | Double-tapping "hecha" un-completes the task in the UI and shows an error | S2 | P2 | BOARD | frontend-dev | FIXED |
-| CASA-013 | `npm run lint` fails — `require()` import in `src/lib/supabase/server.ts` | S3 | P1 | PERF | backend-dev | OPEN |
+| CASA-013 | `npm run lint` fails — `require()` import in `src/lib/supabase/server.ts` | S3 | P1 | PERF | backend-dev | FIXED |
 | CASA-014 | `/callback` spins forever when the magic link is expired or invalid | S3 | P1 | AUTH | frontend-dev | FIXED |
 | CASA-015 | Realtime task updates drop the assignee, so the name vanishes from the card | S3 | P2 | BOARD | frontend-dev | FIXED |
 | CASA-016 | 14 user-visible strings (15 sites) are hardcoded instead of living in `src/lib/i18n/es.ts` | S3 | P2 | I18N | frontend-dev | FIXED |
@@ -59,7 +59,7 @@ Side exits: `REOPENED` · `NEEDS-INFO` · `WONTFIX` · `CANNOT-REPRODUCE` · `DU
 | CASA-021 | History shows an 8-day week: the exclusive end boundary is printed as the last day | S3 | P2 | HIST | frontend-dev | FIXED |
 | CASA-022 | A weekly recurring task saved with no weekday is accepted and never generates anything | S3 | P2 | TASK | frontend-dev | FIXED |
 | CASA-023 | A member can add a phone number but can never remove it | S3 | P2 | SET | frontend-dev | FIXED |
-| CASA-024 | `/manifest.json` is declared in metadata but does not exist | S3 | P3 | PERF | backend-dev | OPEN |
+| CASA-024 | `/manifest.json` is declared in metadata but does not exist | S3 | P3 | PERF | backend-dev | FIXED |
 
 ## Fix order
 
@@ -110,7 +110,7 @@ outside the frontend boundary — the one-line diff is in the entry and as an OP
 | **Priority** | P3 |
 | **Area** | PERF |
 | **Owner** | backend-dev |
-| **Status** | OPEN |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E1 · viewport 390×844 |
 | **Test case** | TC-PERF-002 |
 
@@ -232,10 +232,25 @@ Worth noting for QA: browsers fetch a manifest without credentials by default, s
 a signed-in member. The matcher change is required, not cosmetic.
 
 **Fix applied**
-Partial. `public/manifest.json` (new) + `public/icon.svg` (new) — a valid, Casa-branded web-app
-manifest with `name`, `start_url`, `theme_color` and an icon now exists and `src/app/layout.tsx` keeps
-pointing at it. **Still open:** the `src/proxy.ts:56` matcher exclusion, outside the frontend boundary,
-without which `GET /manifest.json` remains `307 → /login`.
+`public/manifest.json` (new) + `public/icon.svg` (new, both by frontend-dev) — a valid, Casa-branded
+web-app manifest with `name`, `start_url`, `theme_color` and an icon; `src/app/layout.tsx` keeps
+pointing at it. **backend-dev, 2026-09-19:** `src/proxy.ts` matcher — added `manifest.json` to the
+negative lookahead, anchored immediately after the leading `/` exactly like `favicon.ico`:
+```diff
+-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
++    '/((?!_next/static|_next/image|favicon.ico|manifest.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+```
+`icon.svg` needs no entry — it's already covered by the `.svg` branch, confirmed working in frontend's
+own measurement. Not re-verified live here (no Supabase project / running server in this environment);
+this is a one-line, narrowly-anchored exclusion identical in shape to the pre-existing `favicon.ico`
+one, so it does not widen which requests skip the auth redirect. TC-AUTH-001…005 should still be
+re-run by QA per the entry's own regression note before this is marked `VERIFIED`.
+
+**Dev notes (backend-dev, 2026-09-19)**
+Took the exact one-line diff frontend-dev already worked out and logged as the OPEN handoff in
+`CONTRACT.md` — no reason to design a different fix when the correct one was already specified and
+justified. Did not add `icon.svg` to the matcher since the `.svg` extension branch already excludes it
+(frontend's own before/after measurement confirms `icon.svg` already returns 200).
 
 ---
 
@@ -1324,7 +1339,7 @@ Verified live, signed-out — this was the one bug in the batch that did not nee
 | **Priority** | P1 |
 | **Area** | PERF |
 | **Owner** | backend-dev |
-| **Status** | OPEN |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static · viewport n/a |
 | **Test case** | TC-PERF-001 |
 
@@ -1405,8 +1420,20 @@ build output still lists the three `ƒ /api/cron/*` routes.
 The 118 remaining warnings are noise, most of them from `.claude/skills/**` vendor scripts that
 `eslint.config.mjs` does not ignore. Not a defect — recorded as an observation in the run report.
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the suggested fix verbatim, plus the fail-fast suggestion: `createServiceClient` now throws if
+`SUPABASE_SERVICE_ROLE_KEY` is missing instead of silently constructing a client with an `undefined`
+key — relevant to CASA-003, where a half-configured deploy running with a bad secret was part of the
+same failure family. Verified the static import doesn't change route composition: `next build`'s route
+list still shows all three `ƒ /api/cron/*` routes.
+
+**Fix applied**
+`src/lib/supabase/server.ts` — `createServiceClient` now uses a static `import { createClient as
+createSupabaseClient } from '@supabase/supabase-js'` instead of `require()`, and throws
+`SUPABASE_SERVICE_ROLE_KEY is not set` if the env var is missing. `npm run lint` exits 0 (0 errors, 111
+warnings, all pre-existing/unrelated). `npx next build` compiles successfully; the only build failure
+left is a pre-existing TypeScript error in `onboarding/page.tsx` from the CASA-009 signature change
+(see that entry) — unrelated to this fix.
 
 ---
 
@@ -1737,7 +1764,7 @@ Took the frontend half only, which is enough to close the bug: `isOwner` is deri
 | **Priority** | P1 |
 | **Area** | SEC |
 | **Owner** | backend-dev |
-| **Status** | OPEN |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 + local Postgres RLS harness · viewport n/a |
 | **Test case** | TC-SEC-004 |
 
@@ -1857,8 +1884,40 @@ the same change.
 `src/app/(app)/onboarding/page.tsx:104` in lockstep — record the new signature in `CONTRACT.md`
 (`joinHousehold(supabase, joinCode)`).
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the suggested fix: dropped `user_id` entirely rather than keeping a two-argument signature with an
+`auth.uid()` check, since the parameter itself is what let a caller name an arbitrary victim — removing
+it is strictly safer than trusting the caller to pass the right value. Also dropped `join_code` from the
+return payload (`json_build_object('id', h.id, 'name', h.name)`), per the entry's own evidence that the
+old function leaked the full household row, join_code included, to a non-member. Added
+`set search_path = public`, called out as missing in the entry's acceptance criteria (the earlier
+`20260913010905` migration had already hardened `is_member`/`join_household`'s search_path for the OLD
+2-arg signature — this migration drops that function and recreates it with the new 1-arg signature, so
+the hardening had to move with it).
+
+Migration file is only file-based, per this run's constraint — not applied to the live project.
+Could not execute the SQL against a live/local Postgres to reconfirm the transcript in this
+environment; verified by reading the function body against the acceptance criteria line by line instead.
+
+**Cross-boundary note (filled by backend-dev):** this is a breaking change to `joinHousehold`'s TS
+signature — `src/lib/data/households.ts` now exports `joinHousehold(supabase, joinCode)` (no `userId`
+argument, and the resolved type narrows to `Pick<Household, 'id' | 'name'>` since the RPC no longer
+returns the full row). The only caller, `src/app/(app)/onboarding/page.tsx:104`
+(`joinHousehold(supabase, userId, joinCode.trim())`), is frontend-owned and was **not** edited — logged
+as an OPEN handoff in `CONTRACT.md` for frontend-dev to drop the `userId` argument. Until that lands,
+`npx next build`'s type-check fails on that one call site (TS2554, "Expected 2 arguments, but got 3") —
+this is the single known build error remaining after this batch of fixes, and it is expected per the
+handoff, not a defect in this fix. The `msg.includes('Already')` string match in `onboarding/page.tsx`
+still works unchanged: the RPC still raises exactly `'Already a member'`.
+
+**Fix applied**
+`supabase/migrations/20260913020200_fix_join_household_auth.sql` (new, not applied to the live
+project) — drops `join_household(text, uuid)` and recreates it as `join_household(code text)`, using
+`auth.uid()` internally, raising on a null session, and returning only `{id, name}` instead of the full
+household row. `src/lib/data/households.ts` — `joinHousehold(supabase, joinCode)` matches the new RPC
+signature; return type narrowed to `Pick<Household, 'id' | 'name'>`. **Cross-boundary:** OPEN handoff
+logged in `CONTRACT.md` for frontend-dev (`onboarding/page.tsx:104` still passes the old 3-argument
+call and needs the `userId` argument dropped).
 
 ---
 
@@ -1968,7 +2027,7 @@ New `src/app/error.tsx`, `src/app/(app)/error.tsx`, `src/app/global-error.tsx` a
 | **Priority** | P1 |
 | **Area** | CRON |
 | **Owner** | backend-dev |
-| **Status** | OPEN |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static + L1 probe · viewport n/a |
 | **Test case** | TC-CRON-002 |
 
@@ -2068,8 +2127,45 @@ The week-close dreaded-task reassignment overwrites assignees for the current wi
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the "recommended" robust version, not the plain "advance inside the loop" diff: the entry itself
+flags that `ignoreDuplicates: true` makes rotation drift across re-runs if you just advance
+`pickRotatedAssignee` once per date in the array, because dates that already exist silently no-op yet
+still "consume" a rotation step. Fixed this together with CASA-002 in the same file, since the two
+interact — see that entry's Dev notes for why the upsert became a plain insert.
+
+Implementation: before the date loop, query which of the candidate `dates` already have a task row for
+this template (`existingDates`). The loop skips those entirely — no insert attempt, no rotation
+advance — so a repeated cron run (or a run whose 14-day horizon overlaps the previous one) neither
+duplicates a row nor "spends" a rotation step on a date that turns out to already exist. For dates that
+are genuinely new, `pickRotatedAssignee(memberIds, lastAssignee)` is called once per occurrence and
+`lastAssignee` is threaded forward through the loop — so a fresh 3-member rotating daily template
+produces `a b c a b c …` across the full batch, and a second cron run the next day (one new date at the
+horizon edge) continues the rotation from wherever the last *actually stored* row left off, not from
+`memberIds[0]` again.
+
+Did not touch `pickRotatedAssignee` itself (`src/lib/domain/recurrence.ts`) — the entry's own evidence
+says it's correct; the defect was purely that `generate/route.ts` called it once per template instead
+of once per occurrence.
+
+Regression risk noted in the entry (week-close's dreaded-task reassignment at
+`week-close/route.ts` around line 123 overwrites assignees for the current window): left untouched.
+That reassignment intentionally overrides rotation for the dreaded template specifically — the two
+don't "fight" because dreaded reassignment always runs after generation and is the more specific rule
+(one template, one member, one window), and it doesn't read or depend on the rotation state this fix
+maintains.
+
+Not run against a live/local Postgres or a seeded 3-member household in this environment (no DB
+available here); verified by reading the resulting control flow against the acceptance criteria and by
+`npm test` (unrelated existing `recurrence.test.ts` suite still green — `pickRotatedAssignee`'s own unit
+tests are unaffected since its implementation didn't change).
+
+**Fix applied**
+`src/app/api/cron/generate/route.ts` — `assigneeId` for `assignment === 'rotate'` is now computed once
+PER OCCURRENCE inside the `for (const dateStr of dates)` loop via `pickRotatedAssignee`, instead of once
+per template before the loop. A pre-loop query of already-existing `(template_id, due_date)` rows
+ensures re-running the generator neither reassigns nor "spends" a rotation step on dates that already
+have a task. Combined with the CASA-002 fix in the same file (see that entry).
 
 ---
 
@@ -2174,7 +2270,7 @@ Took the in-page fix rather than asking `backend-dev` for a `todayInTimezone` he
 | **Priority** | P0 |
 | **Area** | SEC |
 | **Owner** | backend-dev |
-| **Status** | OPEN |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 + local Postgres RLS harness · viewport n/a |
 | **Test case** | TC-SEC-002 |
 
@@ -2271,8 +2367,35 @@ re-check onboarding: `getUserHouseholds` runs before any household mate exists.
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the suggested `shares_household()` helper verbatim, `SECURITY DEFINER` for the exact reason the
+entry gives — so the join across `household_members` inside the helper doesn't re-trigger that table's
+own RLS and reproduce CASA-001. Split into two policies (own profile / household mates) as suggested
+rather than one combined `OR`, since that's clearer to audit and matches the `is_member`/`is_owner`
+convention already in the schema.
+
+Did not additionally move `phone_e164` into a separate `profile_contacts` table — the entry offers that
+as a "consider," not the fix itself, and the RLS fix alone already satisfies every acceptance criterion;
+splitting the table is a bigger schema change with its own migration/backfill concerns and would touch
+`getHouseholdMembers`'s `profile:profiles(*)` join shape, which is out of scope for closing this defect.
+Verified the join-flow ordering the entry calls out: `join_household` (SECURITY DEFINER) inserts the
+`household_members` row before any profile read is needed, so a brand-new member's own-profile read
+(`auth.uid() = id`) and their household-mates' reads (`shares_household`, now backed by their just-
+inserted membership row) both resolve correctly on the very next request.
+
+Traced (not executed — no live/local Postgres here) both call sites named in the acceptance criteria:
+`getHouseholdMembers`'s `*, profile:profiles(*)` embed and the task card's
+`assignee:profiles!tasks_assignee_id_fkey(*)` embed both apply `profiles` RLS per embedded row; since
+both queries are already scoped to a household the caller is a member of (via `is_member(household_id)`
+on `household_members`/`tasks`), every embedded profile row's author necessarily shares that household
+with the caller, so `shares_household(id)` holds for all of them.
+
+**Fix applied**
+`supabase/migrations/20260913020100_fix_profiles_rls_privacy.sql` (new, not applied to the live
+project) — drops `"Users can read any profile" using (true)`, adds `shares_household(uuid)` (SECURITY
+DEFINER) and two policies: `"Users can read their own profile"` (`auth.uid() = id`) and `"Users can read
+profiles of household mates"` (`shares_household(id)`). No TypeScript/data-layer change — `getProfile`,
+`getHouseholdMembers` and the task-card assignee join are unaffected in shape.
 
 ---
 
@@ -2284,7 +2407,7 @@ n/a
 | **Priority** | P0 |
 | **Area** | DOM |
 | **Owner** | backend-dev |
-| **Status** | OPEN |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 static + L1 probe · viewport n/a |
 | **Test case** | TC-DOM-001 / TC-DOM-002 / TC-DOM-003 |
 
@@ -2455,8 +2578,35 @@ migrated or left as historical, and say which in `CONTRACT.md`.
 Once the boundary moves, `frontend-dev` must re-verify CASA-021 (history range display), whose
 expected output depends on it.
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the suggested one-line fix exactly: `daysUntilEnd = ((weekEndDay - currentDayOfWeek + 7) % 7) + 1`,
+and removed the now-redundant "if daysUntilEnd === 0, move to next" branch — the `+ 1` already makes
+the end-day case resolve to 1 (closes tonight) instead of 0, so that special-case branch was dead code
+under the corrected formula. `getClosableWeek`, `formatWeekRange` and `isInWeek` needed no change, as
+the entry predicted — they're derived from `getWeekWindow`.
+
+Added `src/lib/domain/__tests__/week.test.ts` using the entry's ready-to-paste test content verbatim
+(the entry notes `week.ts` had zero coverage, which is exactly how this shipped). All cases pass under
+`npm test`, including the "every weekEndDay always spans exactly 7 days and ends the day after
+weekEndDay" sweep over all 7 possible `weekEndDay` values.
+
+**Stored-weeks decision (per the entry's own regression-risk callout):** logged in `CONTRACT.md` as a
+handoff rather than deciding unilaterally in code — any `weeks` rows already written against the live
+project were computed with the OLD (off-by-one) boundary. Recorded recommendation: treat existing rows
+as historical (leave them as-is; the historical week actually closed and its rewards/dreaded-task
+rotation already happened under the old boundary) rather than attempting to recompute or re-derive
+`week_start`/`week_end` for closed weeks. Also flagged there that `frontend-dev` must re-verify CASA-021
+(history range display) once this lands, per that entry's own "verify after CASA-004" note.
+
+Not run against a live/local Postgres or the actual `/api/cron/week-close` route in this environment
+(no DB here); the domain-level fix is unit-tested directly, which is where the bug lived.
+
+**Fix applied**
+`src/lib/domain/week.ts` — `getWeekWindow`'s `daysUntilEnd` is now
+`((weekEndDay - currentDayOfWeek + 7) % 7) + 1` (was `... % 7` with a separate "move to next week"
+special case for the end day itself). `src/lib/domain/__tests__/week.test.ts` (new) — regression
+coverage for every `weekEndDay` value, `daysRemaining`, `formatWeekRange` and `getClosableWeek`.
+Cross-boundary handoff (stored-weeks decision + CASA-021 re-verify) logged in `CONTRACT.md`.
 
 ---
 
@@ -2468,7 +2618,7 @@ expected output depends on it.
 | **Priority** | P0 |
 | **Area** | SEC |
 | **Owner** | backend-dev |
-| **Status** | OPEN |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E1 stub · viewport n/a |
 | **Test case** | TC-SEC-003 |
 
@@ -2584,8 +2734,26 @@ buffers — hence the explicit length test above.
 **Cross-boundary note** _(only when both sides are involved)_
 n/a
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the suggested shared guard essentially verbatim: `src/app/api/cron/auth.ts` exports
+`cronAuthorized(request)`, fails closed when `CRON_SECRET` is unset (`if (!secret) return false`,
+before ever touching the header), and uses `timingSafeEqual` with an explicit length check first (a
+length mismatch would otherwise throw inside `timingSafeEqual` rather than just returning false). All
+three cron routes (`week-close`, `generate`, `reminders`) now call this one function instead of the
+three copy-pasted `!==` comparisons. Also threaded through the CASA-013 fix
+(`createServiceClient` now throws if `SUPABASE_SERVICE_ROLE_KEY` is missing) since the entry explicitly
+connects the two: a half-configured deploy should fail loudly, not run with a bad key.
+
+Not re-run against a live server in this environment (no `.env.local` / Supabase project here to curl
+against); verified by reading `cronAuthorized` against every acceptance criterion line by line — unset
+secret → false for any header including `"Bearer undefined"` and `"Bearer "`; set secret → true only
+for the exact match; single guard, single location.
+
+**Fix applied**
+`src/app/api/cron/auth.ts` (new) — `cronAuthorized(request)`, fail-closed + constant-time comparison.
+`src/app/api/cron/week-close/route.ts`, `src/app/api/cron/generate/route.ts`,
+`src/app/api/cron/reminders/route.ts` — all three now call `cronAuthorized(request)` instead of the
+`authHeader !== \`Bearer ${process.env.CRON_SECRET}\`` comparison.
 
 ---
 
@@ -2597,7 +2765,7 @@ n/a
 | **Priority** | P0 |
 | **Area** | TASK |
 | **Owner** | backend-dev |
-| **Status** | OPEN |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 + local Postgres 16.13 · viewport n/a |
 | **Test case** | TC-TASK-002 / TC-TASK-003 |
 
@@ -2711,8 +2879,34 @@ on the next run, which is existing behaviour but worth confirming is unchanged.
 If the upsert has to change shape, `createTask`'s signature does not — no `CONTRACT.md` change
 expected. If it does, record it.
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+Took the suggested partial-unique-index replacement verbatim (migration file, not applied live). The
+one open question the entry itself raised — whether the generator's `upsert(..., { onConflict:
+'template_id,due_date', ignoreDuplicates: true })` still works against a partial index — the answer is
+no: PostgREST's `onConflict` only emits a column list (`ON CONFLICT (template_id, due_date)`), and
+Postgres requires a partial unique index's predicate to be named explicitly in the `ON CONFLICT` target
+to use it as the arbiter (`ON CONFLICT (col) WHERE <predicate> DO ...`). The query builder has no option
+to add that predicate, so the upsert would fail with "there is no unique or exclusion constraint
+matching the ON CONFLICT specification" once the table constraint became a partial index. Fixed by
+switching the generator from `upsert` to a plain `insert`, catching Postgres's `23505` (unique
+violation) as the "already exists, skip" case — this sidesteps ON CONFLICT arbiter inference entirely,
+so it doesn't care whether the backing index is partial. Combined with the CASA-007 fix in the same
+loop (see that entry) since a plain pre-check for already-existing dates was needed for both bugs at
+once — idempotency here, correct per-occurrence rotation there.
+
+Not run against a live/local Postgres in this environment, so T1–T4 from the entry's evidence were not
+re-executed; the SQL is a direct, unmodified application of the suggested diff, and the generator change
+was verified by reading the control flow against all four "Acceptance criteria" lines (cross-household
+one-offs, same-household one-offs, dateless one-offs, and `/api/cron/generate` idempotency).
+
+**Fix applied**
+`supabase/migrations/20260913020000_fix_tasks_unique_constraint.sql` (new, not applied to the live
+project) — drops `tasks_template_id_due_date_key`, adds `create unique index tasks_template_due_unique
+on tasks (template_id, due_date) where template_id is not null`. `src/app/api/cron/generate/route.ts` —
+the per-date `upsert(..., onConflict: ...)` became a plain `insert` that treats Postgres error code
+`23505` as a benign duplicate (see Dev notes for why `onConflict` can't target a partial index via
+PostgREST). `createTask`'s signature (`src/lib/data/tasks.ts`) is unchanged — no `CONTRACT.md` update
+needed for this bug.
 
 ---
 
@@ -2724,7 +2918,7 @@ expected. If it does, record it.
 | **Priority** | P0 |
 | **Area** | SEC |
 | **Owner** | backend-dev |
-| **Status** | OPEN |
+| **Status** | FIXED |
 | **Found in** | RUN-2026-09-14 · env E0 + local Postgres 16.13 with the shipped migration · viewport 390×844 |
 | **Test case** | TC-SEC-001 |
 
@@ -2862,5 +3056,26 @@ they have never actually executed.
 n/a — but note that once this lands, `frontend-dev` can finally execute CASA-006, -008, -010, -011,
 -012 and -015. Sequence backend first.
 
-**Dev notes** _(filled by the dev)_
-**Fix applied** _(filled by the dev: files + one-line description)_
+**Dev notes**
+This fix was already executed and verified against the live project (per the coordinator's briefing:
+`supabase/migrations/20260913010905_fix_household_members_rls_recursion.sql` was applied live via MCP
+before this run started, but never committed to git — which is exactly why QA, testing against a fresh
+Postgres seeded only from git history, still found this bug even though it's already fixed live). This
+session's job was to get the file committed, not to re-derive or re-apply the fix. Read the migration
+file and confirmed it matches the entry's suggested fix exactly: `is_owner(h uuid)` as a `SECURITY
+DEFINER` helper (breaking the self-reference the same way `is_member()` already did), the "Owners can
+manage members" policy rewritten to `using (is_owner(household_id))`, plus `set search_path = public`
+hardening on `is_member` and `join_household` (called out in the migration's own comment as a
+previously-missed hardening step). Also confirmed the three OTHER pre-copied-but-uncommitted migrations
+mentioned in the same briefing are present and consistent: `20260909224100_fix_insert_policies.sql`,
+`20260909230146_fix_handle_new_user_search_path.sql`, `20260913010940_add_missing_fk_indexes.sql`.
+
+Did not re-run the L2 RLS harness transcript in this environment (no local Postgres instance here); the
+entry's own evidence already shows this exact fix passing all five reachability cases when applied.
+
+**Fix applied**
+`supabase/migrations/20260913010905_fix_household_members_rls_recursion.sql` — adds `is_owner(uuid)`
+(SECURITY DEFINER) and routes the `household_members` "Owners can manage members" policy through it
+instead of a self-referencing subquery; also hardens `is_member`/`join_household` with `set search_path
+= public`. Already applied live; committed to git in this change so a fresh checkout matches production
+and QA's harness stops reproducing an already-fixed bug.
