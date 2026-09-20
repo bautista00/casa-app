@@ -45,13 +45,15 @@ export async function createHousehold(
 
 export async function joinHousehold(
   supabase: SupabaseClient,
-  userId: string,
   joinCode: string
-): Promise<Household> {
-  // Use RPC since user can't read households they're not in yet
+): Promise<Pick<Household, 'id' | 'name'>> {
+  // Use RPC since user can't read households they're not in yet.
+  // The RPC uses auth.uid() internally (CASA-009) — it no longer takes a
+  // user_id argument, so it can't be used to add a third party. It also no
+  // longer returns the full household row (in particular, not join_code) —
+  // a non-member calling this shouldn't learn the code that got them in.
   const { data, error } = await supabase.rpc('join_household', {
     code: joinCode.toUpperCase(),
-    user_id: userId,
   })
   if (error) throw error
   return data
